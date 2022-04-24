@@ -1,4 +1,5 @@
 import { IoClose } from 'react-icons/io5'
+import { GiClover } from 'react-icons/gi'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { useState } from 'react'
 
@@ -11,8 +12,10 @@ export function CreateBet() {
     const [ showMessage, setShowMessage ] = useState<boolean>(false)
     const [ message, setMessage ] = useState<string>('')
 
+    const showClover = numbersBet.length === 0
+
     const quantityNumbersAllowed = 6
-    const TIME_HIDDEN = 1500
+    const TIME_HIDDEN = 2000
 
     const handleWarnningAutomatically = (message: string) => {
         setShowMessage(true)
@@ -24,7 +27,7 @@ export function CreateBet() {
     }
     
     const validateNumbers = (bets: number[]) => {
-        const validateLength = bets.length < quantityNumbersAllowed || bets.length > quantityNumbersAllowed
+        const validateLength = bets?.length < quantityNumbersAllowed || bets?.length > quantityNumbersAllowed
         if(validateLength) {
             alert('sua aposta precisa ter 6 números')
             return false
@@ -34,7 +37,7 @@ export function CreateBet() {
         const hasDuplicateNumbers = removeDuplicateNumbers.size < quantityNumbersAllowed
         let hasInvalidNumber = false
 
-        bets.forEach(number => {
+        bets?.forEach(number => {
             if(number > 60 || number < 0 || (number % 2 != 0 && number % 2 != 1)) {
                 hasInvalidNumber = true
             } 
@@ -94,8 +97,8 @@ export function CreateBet() {
                 <div className="flex items-center justify-center gap-3 mt-4">
                     {showMessage ? 
                         <Warnning content={message}/> : 
-                        numbersBet.map((number, i) => 
-                    <span key={`${i}-${number}`} className="grid place-items-center w-12 h-12 font-medium bg-green-100 rounded-full text-xl">{number}</span>)}
+                        (showClover ? <GiClover className="animate-bounce text-5xl text-green-500" /> : numbersBet.map((number, i) => 
+                    <span key={`${i}-${number}`} className="grid place-items-center w-12 h-12 font-medium bg-green-100 rounded-full text-xl">{number}</span>))}
                 </div>
             </div>
             { !changeButtons ? <div className="flex items-end justify-center gap-1 pb-1 w-full h-36">

@@ -92,7 +92,7 @@ export function CreateBet() {
     
     return (
         <section className="w-full h-60 bg-green-300">
-            <p className="w-full text-center text-xs text-slate-500 border-b py-2 border-slave" >crie seus jogos</p>
+            <h3 className="w-full text-center text-xs text-slate-500 border-b py-2 border-slave" >crie seus jogos</h3>
             <div className="flex justify-center items-center w-full h-16">
                 <div className="flex items-center justify-center gap-3 mt-4">
                     {showMessage ? 

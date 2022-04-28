@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react'
 import { IoClose } from 'react-icons/io5'
 import { IoOptions } from 'react-icons/io5'
+import { ImFilesEmpty } from 'react-icons//im'
 import { ModalContext } from '../../context/ModalContext'
 
 export function CheckResult() {
@@ -21,26 +22,27 @@ export function CheckResult() {
     }
 
     const fakeFinalBets = [
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53'],
-        ['2', '11', '20', '33', '42', '53']
-        
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53'],
+        // ['2', '11', '20', '33', '42', '53']
     ]
+
+    const isEmpty = fakeFinalBets.length
 
     const formatViewBet = (bet: string[]) => {
         if(bet.length === 0) return
@@ -70,11 +72,14 @@ export function CheckResult() {
                 </div>}
             <div className="w-full h-full overflow-y-auto p-8">
                 <div className="flex flex-col items-center gap-3 w-full h-auto py-2">
-                    { fakeFinalBets.map((bet, index) => 
+                    { !isEmpty ? <div className="flex flex-col gap-2 items-center justify-center w-72 h-32">
+                                    < ImFilesEmpty className="text-3xl text-slate-700"/>
+                                    <p className="uppercase text-sm text-slate-700">Sem jogos ainda!</p>
+                                </div>  : (fakeFinalBets.map((bet, index) => 
                         <div key={`${index}-${bet}`} className="flex items-center gap-4">
                             <span className="p-2 bg-slate-50 text-xl font-normal">{formatViewBet(bet)}</span>
                             { showSingleButtonDelete && < IoClose className="text-4xl cursor-pointer text-red-500" onClick={hadleShowButtons}/>}
-                        </div>) }
+                        </div>)) }
                 </div>
             </div>
             <div className="grid place-items-center w-full h-24 pb-2">

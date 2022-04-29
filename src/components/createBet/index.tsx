@@ -97,7 +97,7 @@ export function CreateBet() {
                 <div className="flex items-center justify-center gap-3 mt-4">
                     {showMessage ? 
                         <Warnning content={message}/> : 
-                        (showClover ? <GiClover className="animate-bounce text-5xl text-green-500" /> : numbersBet.map((number, i) => 
+                        (showClover ? <GiClover className="animate-bounce text-5xl text-green-500 drop-shadow-lg" /> : numbersBet.map((number, i) => 
                     <span key={`${i}-${number}`} className="grid place-items-center w-12 h-12 font-medium bg-green-100 rounded-full text-xl">{number}</span>))}
                 </div>
             </div>

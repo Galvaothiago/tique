@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useState } from "react";
 
 interface BetsProps {
-    allBets: number[],
+    allBets: number[][],
     insertBet: (arr: number[]) => void
 }
 
@@ -12,13 +12,13 @@ interface ChildrenProps {
 export const BetsContext = createContext({} as BetsProps)
 
 export function BetsProvider({ children }: ChildrenProps) {
-    const [ allBets, setAllBets ] = useState<number[]>([])
+    const [ allBets, setAllBets ] = useState<number[][]>([])
     let bets = []
 
     const insertBet = (arrayBet: number[]) => {
        bets.push(arrayBet)
 
-       setAllBets(bets)
+       setAllBets(oldBets => [...oldBets, bets])
     }
 
     return (

@@ -1,12 +1,16 @@
 import { IoClose } from 'react-icons/io5'
 import { GiClover } from 'react-icons/gi'
 import { AiOutlineCheck } from 'react-icons/ai'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { generateSixNumbers } from '../../utils/generateBet'
 import { Warnning } from '../warnning'
+import { BetsContext } from '../../context/BetsContext'
+import { validateNumbers } from '../../utils/validateNumbers'
 
 export function CreateBet() {
+    const { insertBet } = useContext(BetsContext)
+
     const [ numbersBet, setNumbersBet ] = useState<number[]>([])
     const [ changeButtons, setChangeButtons ] = useState<boolean>(false)
     const [ showMessage, setShowMessage ] = useState<boolean>(false)
@@ -25,31 +29,6 @@ export function CreateBet() {
             setShowMessage(false)
         }, TIME_HIDDEN)
     }
-    
-    const validateNumbers = (bets: number[]) => {
-        const validateLength = bets?.length < quantityNumbersAllowed || bets?.length > quantityNumbersAllowed
-        if(validateLength) {
-            alert('sua aposta precisa ter 6 números')
-            return false
-        }
-        
-        const removeDuplicateNumbers = new Set(bets)
-        const hasDuplicateNumbers = removeDuplicateNumbers.size < quantityNumbersAllowed
-        let hasInvalidNumber = false
-
-        bets?.forEach(number => {
-            if(number > 60 || number < 0 || (number % 2 != 0 && number % 2 != 1)) {
-                hasInvalidNumber = true
-            } 
-        })
-
-        if(!hasInvalidNumber && !hasDuplicateNumbers) {
-            return true  
-        } 
-        
-        alert('existem numeros repitidos ou invalidos, verifique e tente novamente')
-        return false
-    }
 
     const createNewBet = () => {
         setNumbersBet([])
@@ -59,11 +38,12 @@ export function CreateBet() {
         const arrayBet = bet?.split(',')
         const finalBet = arrayBet?.map(number => Number(number))
         
-        const isValidBet = validateNumbers(finalBet)
+        const isValidBet = validateNumbers(finalBet, quantityNumbersAllowed)
         if(isValidBet) {
             setNumbersBet(finalBet)
             setChangeButtons(true)
         }
+
     }
 
     const createBetAutomatically = () => {
@@ -83,7 +63,7 @@ export function CreateBet() {
     }
 
     const addBet = () => {
-        console.log('added bet')
+        insertBet(numbersBet)
         setNumbersBet([])
         setChangeButtons(false)
         

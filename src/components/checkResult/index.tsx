@@ -3,55 +3,48 @@ import { IoClose } from 'react-icons/io5'
 import { IoOptions } from 'react-icons/io5'
 import { ImFilesEmpty } from 'react-icons//im'
 import { ModalContext } from '../../context/ModalContext'
+import { BetsContext } from '../../context/BetsContext'
 
 export function CheckResult() {
     const { openModal } = useContext(ModalContext)
+    const { allBets } = useContext(BetsContext)
 
     const [ showButtonsDelete, setShowButtonsDelete ] = useState<boolean>(false)
     const [ showSingleButtonDelete, setShowSingleButtonDelete ] = useState<boolean>(false)
 
-    const TIME_CLOSE_AUTOMATICALLY = 60 * 1000 //1 minute
+    const isEmpty = allBets.length === 0
+    const TIME_CLOSE_AUTOMATICALLY = 60 * 1000 * 3 //3 minutes
 
     const hadleShowButtons = () => {
         setShowButtonsDelete(true)
-
+    
         setTimeout(() => {
             setShowButtonsDelete(false)
             setShowSingleButtonDelete(false)
         }, TIME_CLOSE_AUTOMATICALLY)
     }
 
-    const fakeFinalBets = [
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53'],
-        // ['2', '11', '20', '33', '42', '53']
-    ]
+    const hiddenButtons = () => {
+        setShowButtonsDelete(false)
+        setShowSingleButtonDelete(false)
+    }
 
-    const isEmpty = fakeFinalBets.length
+    const sortArray = (arr: any) => {
+        const arrToSort = arr[0]
 
-    const formatViewBet = (bet: string[]) => {
+        return arrToSort?.sort((a: number, b: number) => a - b)
+    }
+
+    const formatViewBet = (bet: number[]) => {
         if(bet.length === 0) return
 
         const INITAL_STRING = 0
         const REMOVE_FROM = 3
-        
-        const formatedBet = bet.reduce((acc, number) => {
-            acc += `${number} - `
+
+        const sortBet = sortArray(bet)
+
+        const formatedBet = sortBet.reduce((acc: string, number: number) => {
+            acc += `${String(number)} - `
             return acc
         }, '')
 
@@ -66,16 +59,20 @@ export function CheckResult() {
                 ( !showSingleButtonDelete ? <div className="flex justify-center gap-2 w-full pb-2">
                     <button className="w-44 p-2 bg-red-400 text-slate-200 rounded-md" onClick={openModal}>excluir todos</button>
                     <button className="w-44 p-2 bg-red-300 rounded-md" onClick={() => setShowSingleButtonDelete(true)}>excluir alguns</button>
-                </div> : <div className="flex justify-center items-center pb-2"><button className="w-44 p-2 bg-green-400 rounded-md">tudo ok?</button></div>) : 
-                <div className="flex w-96 h-12 mx-auto items-center justify-end pr-3">
-                    < IoOptions className="text-2xl cursor-pointer" onClick={hadleShowButtons}/>
-                </div>}
+                </div> : <div className="flex justify-center items-center pb-2">
+                            <button className="w-44 p-2 bg-green-400 rounded-md" onClick={hiddenButtons}>
+                                tudo ok?
+                            </button>
+                        </div> ) : 
+                <div className="flex w-96 h-22 mx-auto items-center justify-end pr-3">
+                   { !isEmpty && < IoOptions className="text-2xl cursor-pointer" onClick={hadleShowButtons}/> }
+                </div> }
             <div className="w-full h-full overflow-y-auto p-8">
                 <div className="flex flex-col items-center gap-3 w-full h-auto py-2">
-                    { !isEmpty ? <div className="flex flex-col gap-2 items-center justify-center w-72 h-32">
+                    { isEmpty ? <div className="flex flex-col gap-2 items-center justify-center w-72 h-32">
                                     < ImFilesEmpty className="text-3xl text-slate-700"/>
                                     <p className="uppercase text-sm text-slate-700">Sem jogos ainda!</p>
-                                </div>  : (fakeFinalBets.map((bet, index) => 
+                                </div>  : (allBets.map((bet, index) => 
                         <div key={`${index}-${bet}`} className="flex items-center gap-4">
                             <span className="p-2 bg-slate-50 text-xl font-normal">{formatViewBet(bet)}</span>
                             { showSingleButtonDelete && < IoClose className="text-4xl cursor-pointer text-red-500" onClick={hadleShowButtons}/>}

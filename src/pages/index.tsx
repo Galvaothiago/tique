@@ -7,7 +7,6 @@ import { Login } from "../components/login";
 import { UserContext } from "../context/UserCOntext";
 
 export default function Home() {
-  const URL_IMG = "https://github.com/Galvaothiago.png"
   const { user } = useContext(UserContext)
   console.log(user)
 

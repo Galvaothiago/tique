@@ -27,7 +27,6 @@ const signInWithGoogleOrFacebook= async (typeProvider: string = 'google') => {
         const q = query(collection(db, "users"), where("uid", "==", user.uid));
         const docs = await getDocs(q);
 
-        console.log(user)
         if (docs.docs.length === 0) {
         await addDoc(collection(db, "users"), {
             uid: user.uid,

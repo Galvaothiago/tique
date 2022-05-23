@@ -12,10 +12,13 @@ export function BetResult() {
         const newDate = new Date()
 
         const day = newDate.getDate()
-        const month = newDate.getMonth() + 1 // added more 1 because the month start from zero and not from 1
+        const month = newDate.getMonth() + 1 // added more 1 because the month start from zero
         const year = newDate.getFullYear()
    
-        setNewDate(`${day}/${month}/${year}`)
+        const dayLessThanTen = day < 10 ? `0${day}` : day
+        const monthLessThenTen = month < 10 ? `0${month}` : month
+
+        setNewDate(`${dayLessThanTen}/${monthLessThenTen}/${year}`)
     }
     const createNewResult = () => {
         const newResult = prompt("insira os números separados por vírgula. Ex: 3,23,44,54,58,60")

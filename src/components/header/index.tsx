@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { UserContext } from "../../context/UserCOntext"
+import { UserContext } from "../../context/UserContext"
 
 
 interface urlImgProp {

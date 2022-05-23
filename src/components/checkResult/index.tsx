@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react'
-import { IoClose } from 'react-icons/io5'
+import { IoTrash } from 'react-icons/io5'
 import { IoOptions } from 'react-icons/io5'
 import { ImFilesEmpty } from 'react-icons//im'
 import { ModalContext } from '../../context/ModalContext'
@@ -7,7 +7,7 @@ import { BetsContext } from '../../context/BetsContext'
 
 export function CheckResult() {
     const { openModal } = useContext(ModalContext)
-    const { allBets } = useContext(BetsContext)
+    const { allBets, removeSomeBet } = useContext(BetsContext)
 
     const [ showButtonsDelete, setShowButtonsDelete ] = useState<boolean>(false)
     const [ showSingleButtonDelete, setShowSingleButtonDelete ] = useState<boolean>(false)
@@ -15,8 +15,9 @@ export function CheckResult() {
     const isEmpty = allBets.length === 0
     const TIME_CLOSE_AUTOMATICALLY = 60 * 1000 * 3 //3 minutes
 
-    const hadleShowButtons = () => {
+    const handleShowButtons = () => {
         setShowButtonsDelete(true)
+        setShowSingleButtonDelete(true)
     
         setTimeout(() => {
             setShowButtonsDelete(false)
@@ -29,10 +30,10 @@ export function CheckResult() {
         setShowSingleButtonDelete(false)
     }
 
-    const sortArray = (arr: any) => {
-        const arrToSort = arr[0]
+    const sortArray = (arr: number[]) => {
+        const arrToSort: number[] | any = arr[0]
 
-        return arrToSort?.sort((a: number, b: number) => a - b)
+        return arrToSort.sort((a: number, b: number) => a - b)
     }
 
     const formatViewBet = (bet: number[]) => {
@@ -56,16 +57,18 @@ export function CheckResult() {
         <div className="flex flex-col w-full h-96 bg-green-100">
             <h3 className="w-full text-center text-xs text-slate-500 border-b py-2 border-slave">confira seus jogos</h3>
             { showButtonsDelete ? 
-                ( !showSingleButtonDelete ? <div className="flex justify-center gap-2 w-full pb-2">
-                    <button className="w-44 p-2 bg-red-400 text-slate-200 rounded-md" onClick={openModal}>excluir todos</button>
-                    <button className="w-44 p-2 bg-red-300 rounded-md" onClick={() => setShowSingleButtonDelete(true)}>excluir alguns</button>
-                </div> : <div className="flex justify-center items-center pb-2">
-                            <button className="w-44 p-2 bg-green-400 rounded-md" onClick={hiddenButtons}>
-                                tudo ok?
-                            </button>
-                        </div> ) : 
+                (<div className="flex justify-center gap-2 w-full pb-2">
+                    <button className="w-44 p-2 bg-red-400 text-slate-200 rounded-md" 
+                        onClick={openModal}>
+                        excluir todos
+                    </button>
+                    <button className="w-44 p-2 bg-green-400 rounded-md" 
+                        onClick={hiddenButtons}>
+                        tudo ok?
+                    </button>
+                </div>) : 
                 <div className="flex w-96 h-22 mx-auto items-center justify-end pr-3">
-                   { !isEmpty && < IoOptions className="text-2xl cursor-pointer" onClick={hadleShowButtons}/> }
+                   { !isEmpty && < IoOptions className="text-2xl cursor-pointer" onClick={handleShowButtons}/> }
                 </div> }
             <div className="w-full h-full overflow-y-auto p-8">
                 <div className="flex flex-col items-center gap-3 w-full h-auto py-2">
@@ -75,7 +78,7 @@ export function CheckResult() {
                                 </div>  : (allBets.map((bet, index) => 
                         <div key={`${index}-${bet}`} className="flex items-center gap-4">
                             <span className="p-2 bg-slate-50 text-xl font-normal">{formatViewBet(bet)}</span>
-                            { showSingleButtonDelete && < IoClose className="text-4xl cursor-pointer text-red-500" onClick={hadleShowButtons}/>}
+                            { showSingleButtonDelete && < IoTrash className="text-2xl cursor-pointer text-red-500" onClick={() => removeSomeBet(bet)}/>}
                         </div>)) }
                 </div>
             </div>

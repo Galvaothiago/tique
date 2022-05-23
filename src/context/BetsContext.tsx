@@ -2,7 +2,8 @@ import { createContext, ReactNode, useState } from "react";
 
 interface BetsProps {
     allBets: number[][],
-    insertBet: (arr: number[]) => void
+    insertBet: (arr: number[]) => void,
+    removeSomeBet: (arr: number[]) => void
 }
 
 interface ChildrenProps {
@@ -21,11 +22,20 @@ export function BetsProvider({ children }: ChildrenProps) {
        setAllBets(oldBets => [...oldBets, bets])
     }
 
+    const removeSomeBet = (arrayBet: number[]) => {
+        const betsAfterRemove = allBets.filter(bet => {
+           return  bet !== arrayBet
+        })
+
+        setAllBets(betsAfterRemove)
+    }
+
     return (
         <BetsContext.Provider
             value={{
                 allBets,
-                insertBet
+                insertBet,
+                removeSomeBet
             }}
         >
             { children }

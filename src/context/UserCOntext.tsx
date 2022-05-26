@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useState } from "react";
-import { signInWithGoogleOrFacebook } from "../authFIrebase";
+import { signInWithGoogleOrFacebook } from "../authFirebase";
 import { signOut } from 'firebase/auth'
 import { auth } from "../../firebase";
 
@@ -43,7 +43,6 @@ export function UserProvider({ children }: ChildrenProp) {
     }
 
     const logout = async () => {
-        console.log('logout')
        await signOut(auth);
        setUser(null)
         

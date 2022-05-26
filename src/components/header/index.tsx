@@ -1,7 +1,4 @@
-import { useContext } from "react"
-import { UserContext } from "../../context/UserContext"
 import { ImgProfile } from "../imgProfile"
-
 
 export interface urlImgProp {
     urlImg: string | undefined,

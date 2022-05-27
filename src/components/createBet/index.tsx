@@ -7,6 +7,7 @@ import { generateSixNumbers } from '../../utils/generateBet'
 import { Warnning } from '../warnning'
 import { BetsContext } from '../../context/BetsContext'
 import { validateNumbers } from '../../utils/validateNumbers'
+import { CloverEffect } from '../cloverEffect'
 
 export function CreateBet() {
     const { insertBet } = useContext(BetsContext)
@@ -77,7 +78,7 @@ export function CreateBet() {
                 <div className="flex items-center justify-center gap-3 mt-4">
                     {showMessage ? 
                         <Warnning content={message}/> : 
-                        (showClover ? <GiClover className="animate-bounce text-5xl text-green-500 drop-shadow-lg" /> : numbersBet.map((number, i) => 
+                        (showClover ? <CloverEffect size="medium"/> : numbersBet.map((number, i) => 
                     <span key={`${i}-${number}`} className="grid place-items-center w-12 h-12 font-medium bg-green-100 rounded-full text-xl">{number}</span>))}
                 </div>
             </div>

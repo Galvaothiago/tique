@@ -10,7 +10,7 @@ export function Header({ urlImg, name }: urlImgProp) {
     return (
         <header className="flex justify-between items-center w-full h-24 p-4 text-lg" >
             <span>{`Olá, ${name ?? defaultName}`}</span>
-            <ImgProfile urlImg={urlImg} name={'thiago galvao'}/>
+            <ImgProfile urlImg={urlImg} name={name}/>
         </header>
     )
 }

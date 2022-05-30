@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useState } from "react";
 import { signInWithGoogle, signInWithCredentials } from "../authFirebase";
-import { signOut } from 'firebase/auth'
+import { signOut, UserCredential } from 'firebase/auth'
 import { auth } from "../../firebase";
 
 interface ChildrenProp {
@@ -12,7 +12,7 @@ interface CredentialsProps {
     password: string
 }
 
-interface User {
+export interface User {
     id: string,
     name: string,
     email: string,
@@ -45,6 +45,8 @@ export function UserProvider({ children }: ChildrenProp) {
                 imgProfile: user.photoURL
             })
 
+            console.log(user)
+
         } catch(err) {
             console.log(err)
             alert(err)
@@ -56,7 +58,10 @@ export function UserProvider({ children }: ChildrenProp) {
 
         try {
             const { user, errorMessage, errorCode } = await signInWithCredentials(email, password)
+
             if(errorMessage) setError(errorMessage)
+
+            setUser(user)
             console.log(user, errorCode, errorMessage)
 
         } catch(err) {

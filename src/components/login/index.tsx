@@ -88,7 +88,7 @@ export function Login() {
                     </form>
                 </div>
                 <div className="flex items-center justify-center mt-6">
-                    <a href="#" target="_blank" className="inline-flex items-center text-xs font-bold text-center text-slate-600 hover:text-gray-700">
+                    <a href="/createAccount" target="_blank" className="inline-flex items-center text-xs font-bold text-center text-slate-600 hover:text-gray-700">
                         <span className="ml-2">
                             Ainda não possui uma conta?
                         </span>

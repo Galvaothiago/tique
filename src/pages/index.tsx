@@ -8,7 +8,7 @@ import { UserContext } from "../context/UserContext";
 
 export default function Home() {
   const { user } = useContext(UserContext)
-
+  
   return (
     <>
     { !user ? <Login /> :

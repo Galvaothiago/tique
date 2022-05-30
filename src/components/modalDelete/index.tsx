@@ -11,8 +11,8 @@ export function ModalDelete() {
         closeModal()
     }
     return (
-        <div className="flex justify-center items-center w-full h-screen bg-white/60 inset-0 fixed">
-            <div className="flex flex-col items-center justify-between max-w-xs w-full h-64 bg-white pb-2 pt-6 px-2">
+        <div className="flex justify-center items-center w-full h-screen bg-white/60 inset-0 px-2 fixed">
+            <div className="flex flex-col items-center justify-between max-w-md w-full h-72 bg-white pb-2 pt-6 px-4">
                 <p className="text-center text-lg font-bold">Tem certeza que deseja excluir todos os seus jogos?</p>
                 <div className="flex gap-1 w-full h-auto">
                     <button className="w-full h-16 rounded-md bg-red-500 text-white uppercase font-bold"

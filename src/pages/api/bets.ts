@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-import { collection, getDocs, doc, where, query, addDoc } from "firebase/firestore";
+import { collection, getDocs, doc, where, query, addDoc, updateDoc } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../firebase";
 
@@ -9,13 +9,22 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const STATUS_OK = 200
 
   if(req.method === 'GET') {
-    const q = query(collection(db, "bets"), where("id_user", "==", userId));
-    const docs = await getDocs(q);
+    try {
+      const q = query(collection(db, "bets"), where("id_user", "==", userId));
+      const docs = await getDocs(q);
+      
+      if(docs.docs.length !== 0) {
+        const data = docs.docs[0].data()
+        const dataRefId = docs.docs[0].id
 
-    const data = docs.docs[0].data()
-  
-    res.status(STATUS_OK).json(data)
-    return
+        return res.status(STATUS_OK).json({ dataRefId, data })
+      }
+
+      return res.status(404).json({ message: "NOT FOUND" })
+
+    } catch(err) {
+      console.log(err.message)
+    }
   }
 
   if(req.method === 'POST') {
@@ -29,9 +38,26 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if(req.method === 'PUT') {
-    const userId = req.query.userId
 
-    // const betsUser = doc(db, "bets", userId)
+    const newData = req.body
+
+    try {
+      const q = query(collection(db, "bets"), where("id_user", "==", newData.params.userId));
+      const docs = await getDocs(q);
+      const dataRef = docs.docs[0].ref
+
+      if(docs.docs.length !== 0) {
+        await updateDoc(dataRef, {
+          "bet_result.date": (new Date()).toISOString(),
+          "bet_result.result": newData.body.bet_result.result
+        })
+
+        return res.status(204)
+      }
+
+    } catch(err) {
+      console.log(err.message)
+    }
   }
 
 }

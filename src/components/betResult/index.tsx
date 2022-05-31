@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { AiOutlineEdit } from 'react-icons/ai'
+import { UserContext } from '../../context/UserContext'
+import { api } from '../../service/api'
 import { validateNumbers } from '../../utils/validateNumbers'
 
 export function BetResult() {
@@ -8,31 +10,69 @@ export function BetResult() {
 
     const  quantityNumbersAllowed = 6
 
-    const insertDate = () => {
-        const newDate = new Date()
+    const { user } = useContext(UserContext)
 
-        const day = newDate.getDate()
-        const month = newDate.getMonth() + 1 // added more 1 because the month start from zero
-        const year = newDate.getFullYear()
-   
-        const dayLessThanTen = day < 10 ? `0${day}` : day
-        const monthLessThenTen = month < 10 ? `0${month}` : month
+    const getFormatDateResult = (date: string) => {
+        const firstDate = date.split('T')
+        
+        const partsDate = firstDate[0].split('-')
 
-        setNewDate(`${dayLessThanTen}/${monthLessThenTen}/${year}`)
+        return `${partsDate[2]}/${partsDate[1]}/${partsDate[0]}`
     }
-    const createNewResult = () => {
+
+    const transformArray = (arr: string) => {
+        const newArr = arr.split('-')
+
+        const arrNumber = newArr.map(number => Number(number))
+        return arrNumber
+    }
+
+    const createNewResult = async () => {
         const newResult = prompt("insira os números separados por vírgula. Ex: 3,23,44,54,58,60")
 
-        const arrayResult = newResult?.split(',')
-        const finalResult = arrayResult?.map(number => Number(number))
-        
-        const isValidBet = validateNumbers(finalResult, quantityNumbersAllowed)
+        if(!!newResult) {
 
-        if(isValidBet) {
-            setResultToVerify(finalResult)
-            insertDate()
+            const arrayResult = newResult?.split(',')
+            const finalResult = arrayResult?.map(number => Number(number))
+            
+            const resultToSave = finalResult.map(number => String(number)).join(' - ')
+            const isValidBet = validateNumbers(finalResult, quantityNumbersAllowed)
+    
+            if(isValidBet) {
+                setResultToVerify(finalResult)
+                
+                await api.put('/bets', {
+                    params: {
+                        userId: user.id
+                    },
+                    body: {
+                        bet_result :{
+                            result: resultToSave
+                        } 
+                    }
+                })
+            }
         }
     }
+
+
+    useEffect(() => {
+        const getResult = async() => {
+            const result = await api.get('/bets',{
+                params: {
+                    userId: user.id
+                }
+            })
+
+            const dataResult = transformArray(result.data.data.bet_result.result) 
+            
+            setResultToVerify(dataResult)
+            setNewDate(getFormatDateResult(result.data.data.bet_result.date))
+        }
+
+        getResult()
+        
+    }, [])
 
     return (
         <section className="w-full h-52 bg-slate-100" >
@@ -43,13 +83,15 @@ export function BetResult() {
             </div>
             <div className="flex justify-between items-center mx-auto w-96 px-4 pt-8">
                 <div 
-                    onClick={createNewResult}
+                    onClick={() => {createNewResult()}}
                     className="flex items-center gap-1 text-xs font-bold uppercase cursor-pointer"
                 >
                     editar
                     <AiOutlineEdit />
                 </div>
-                <span className="text-xs font-bold">{newDate}</span>    
+                <div>
+                    <span className="text-xs font-bold">{newDate}</span>    
+                </div>
             </div>
         </section>
     )

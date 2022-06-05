@@ -58,7 +58,7 @@ export function BetResult() {
 
     useEffect(() => {
         const getResult = async() => {
-            const result = await api.get('/bets',{
+            const result = await api.get('/bets', {
                 params: {
                     userId: user.id
                 }

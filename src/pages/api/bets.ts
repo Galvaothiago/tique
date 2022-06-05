@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-import { collection, getDocs, doc, where, query, addDoc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, where, query, addDoc, updateDoc } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../firebase";
 
@@ -30,26 +30,30 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if(req.method === 'POST') {
     const data = req.body
 
-    console.log(data)
+    try {
+      const betRef = await addDoc(collection(db, "bets"), data)
+      
+      res.status(STATUS_OK).json({ id: betRef.id})
 
-    const betRef = await addDoc(collection(db, "bets"), data)
-    
-    res.status(STATUS_OK).json({ id: betRef.id})
+    } catch(err) {
+      console.log(err.message)
+    }
+
   }
 
   if(req.method === 'PUT') {
 
-    const newData = req.body
+    const data = req.body
 
     try {
-      const q = query(collection(db, "bets"), where("id_user", "==", newData.params.userId));
+      const q = query(collection(db, "bets"), where("id_user", "==", data.params.userId));
       const docs = await getDocs(q);
       const dataRef = docs.docs[0].ref
 
       if(docs.docs.length !== 0) {
         await updateDoc(dataRef, {
           "bet_result.date": (new Date()).toISOString(),
-          "bet_result.result": newData.body.bet_result.result
+          "bet_result.result": data.body.bet_result.result
         })
 
         return res.status(204)

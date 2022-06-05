@@ -4,10 +4,15 @@ import { IoOptions } from 'react-icons/io5'
 import { ImFilesEmpty } from 'react-icons//im'
 import { ModalContext } from '../../context/ModalContext'
 import { BetsContext } from '../../context/BetsContext'
+import { api } from '../../service/api'
+import { UserContext } from '../../context/UserContext'
+
 
 export function CheckResult() {
     const { openModal } = useContext(ModalContext)
-    const { allBets, removeSomeBet } = useContext(BetsContext)
+    const { allBets, removeSomeBet, replaceBetsWithNewOnes } = useContext(BetsContext)
+
+    const { user } = useContext(UserContext)
 
     const [ showButtonsDelete, setShowButtonsDelete ] = useState<boolean>(false)
     const [ showSingleButtonDelete, setShowSingleButtonDelete ] = useState<boolean>(false)
@@ -31,7 +36,7 @@ export function CheckResult() {
     }
 
     const sortArray = (arr: number[]) => {
-        const arrToSort: number[] | any = arr[0]
+        const arrToSort: number[] = arr
 
         return arrToSort.sort((a: number, b: number) => a - b)
     }
@@ -51,6 +56,38 @@ export function CheckResult() {
 
         const finalBet = formatedBet.substring(INITAL_STRING, (formatedBet.length - REMOVE_FROM))
         return finalBet
+    }
+
+    const transformArrStringToArrNumber = (arr: string) => {
+        const stringValue = arr
+        const arrNumber = stringValue.split('-').map(str => Number(str.trim()))
+
+        return arrNumber
+    }
+
+    const getAllBets = async () => {
+        const result = await api.get('bets', {
+            params: {
+                userId: user.id
+            }
+        })
+
+        // const betsResult = result.data.data.my_bets.map((bets: string) => transformArrStringToArrNumber(bets))
+       
+        // replaceBetsWithNewOnes(betsResult)
+        console.log(result.data.data.my_bets)
+    }
+
+    const createAndSaveBets = async () => {
+        const { id } = user
+
+        const data = {
+            id_user: id,
+            my_bets: ['teste', 'test2']
+        }
+
+        const result = await api.post('bets', data)
+        console.log(result.data)
     }
 
     return (
@@ -83,7 +120,11 @@ export function CheckResult() {
                 </div>
             </div>
             <div className="grid place-items-center w-full h-24 pb-2">
-                <button className="w-80 h-12 bg-green-400 rounded uppercase text-xs text-slate-50">conferir jogos</button>
+                <button 
+                    className="w-80 h-12 bg-green-400 rounded uppercase text-xs text-slate-50"
+                    onClick={getAllBets}>
+                        conferir jogos
+                </button>
             </div>
         </div>
     )

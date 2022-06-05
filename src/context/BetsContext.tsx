@@ -4,6 +4,7 @@ interface BetsProps {
     allBets: number[][],
     insertBet: (arr: number[]) => void,
     removeSomeBet: (arr: number[]) => void,
+    replaceBetsWithNewOnes: (newBets: number[][]) => void
     cleanAllBets: () => void
 }
 
@@ -18,9 +19,15 @@ export function BetsProvider({ children }: ChildrenProps) {
     let bets = []
 
     const insertBet = (arrayBet: number[]) => {
-       bets.push(arrayBet)
+       bets = arrayBet
 
+       console.log("received by params: ",arrayBet)
+       console.log("all bets : ",allBets)
        setAllBets(oldBets => [...oldBets, bets])
+    }
+
+    const replaceBetsWithNewOnes = (newBets: number[][]) => {
+        setAllBets(newBets)
     }
 
     const removeSomeBet = (arrayBet: number[]) => {
@@ -41,6 +48,7 @@ export function BetsProvider({ children }: ChildrenProps) {
                 allBets,
                 insertBet,
                 removeSomeBet,
+                replaceBetsWithNewOnes,
                 cleanAllBets
             }}
         >

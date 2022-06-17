@@ -107,7 +107,6 @@ const signInWithCredentials = async (email: string, password: string) => {
         errorCode = err.code
     }
     
-    console.log()
     return { user, errorMessage, errorCode }
 
 }
@@ -117,8 +116,6 @@ const createAccountCredentials = async (newUser: NewUserProp) => {
     const email = newUser.email
     try {
         const { user } = await createUserWithEmailAndPassword(auth, email, password)
-
-        console.log(user.providerData)
         const userAlreadyExist = await emailAlreadyExist(user.uid)
 
         if(!userAlreadyExist) {
@@ -138,5 +135,4 @@ const createAccountCredentials = async (newUser: NewUserProp) => {
     }
 }
 
-// createUserWithEmailAndPassword()
 export { signInWithGoogle, signInWithCredentials, createAccountCredentials }

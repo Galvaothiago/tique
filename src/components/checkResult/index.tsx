@@ -83,11 +83,6 @@ export function CheckResult() {
                 userId: user.id
             }
         })
-
-        // const betsResult = result.data.data.my_bets.map((bets: string) => transformArrStringToArrNumber(bets))
-       
-        // replaceBetsWithNewOnes(betsResult)
-        console.log(result.data.data.my_bets)
     }
 
     const handleSaveBets = async () => {
@@ -126,15 +121,13 @@ export function CheckResult() {
                         onClick={handleGetAllBetHistory}>
                         {contentButton}
                     </span>
-                   < IoOptions className="text-2xl cursor-pointer" onClick={handleShowButtons}/> 
+                   { !showAllBets && < IoOptions className="text-2xl cursor-pointer" onClick={handleShowButtons}/>} 
                 </div> }
-            <div className="w-full h-full overflow-y-auto p-8">
-                <div className="flex flex-col items-center gap-3 w-full h-full py-2">
-
+            <div className="w-full h-full mx-auto overflow-y-auto py-4">
+                <div className="flex w-96 mx-auto flex-col items-center gap-4 py-2 px-12">
                     { showAllBets ? 
-                            <div className={`flex flex-col gap-4 items-center ${ showBetsHistory ? 'h-full justify-start overflow-y-auto' : 'justify-center'} w-96 h-48 py-2 px-8`}>
-                                { allBetsSave?.map(bet => <CardBets key={bet.id_bet} quantity={bet.my_bets.length} date={bet.created_at} />) }
-                            </div>  : (isEmpty ? 
+                                ( allBetsSave?.map(bet => <CardBets key={bet.id_bet} quantity={bet.my_bets.length} date={bet.created_at} />))
+                                    : (isEmpty ? 
                                     <>
                                         < ImFilesEmpty className="text-3xl text-slate-700"/>
                                         <p className="uppercase text-sm text-slate-700">Sem jogos ainda!</p>

@@ -145,7 +145,6 @@ export function BetsProvider({ children }: ChildrenProps) {
             }}
         >
             { children }
-            { <div>teste</div> }
         </BetsContext.Provider>
     )
 }

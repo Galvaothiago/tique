@@ -12,12 +12,23 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const q = query(collection(db, "bets"), where("id_user", "==", userId));
       const docs = await getDocs(q);
-      
-      if(docs.docs.length !== 0) {
-        const data = docs.docs[0].data()
-        const dataRefId = docs.docs[0].id
 
-        return res.status(STATUS_OK).json({ dataRefId, data })
+      const dataResults = []
+      if(docs.docs.length !== 0) {
+
+        docs.docs.forEach(doc => {
+          const dataRefId = doc.id
+
+          const data = {
+            ...doc.data(),
+            dataRefId
+          }
+
+          dataResults.push(data)
+        })
+
+        
+        return res.status(STATUS_OK).json(dataResults)
       }
 
       return res.status(404).json({ message: "NOT FOUND" })
@@ -36,6 +47,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(STATUS_OK).json({ id: betRef.id})
 
     } catch(err) {
+      res.status(400)
       console.log(err.message)
     }
 

@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import { AiOutlineEdit } from 'react-icons/ai'
 import { UserContext } from '../../context/UserContext'
 import { api } from '../../service/api'
+import { getFormatDateResult } from '../../utils/formatDate'
 import { validateNumbers } from '../../utils/validateNumbers'
 
 export function BetResult() {
@@ -11,14 +12,6 @@ export function BetResult() {
     const  quantityNumbersAllowed = 6
 
     const { user } = useContext(UserContext)
-
-    const getFormatDateResult = (date: string) => {
-        const firstDate = date.split('T')
-        
-        const partsDate = firstDate[0].split('-')
-
-        return `${partsDate[2]}/${partsDate[1]}/${partsDate[0]}`
-    }
 
     const transformArray = (arr: string) => {
         const newArr = arr.split('-')
@@ -63,11 +56,15 @@ export function BetResult() {
                     userId: user.id
                 }
             })
-
-            const dataResult = transformArray(result.data.data.bet_result.result) 
             
-            setResultToVerify(dataResult)
-            setNewDate(getFormatDateResult(result.data.data.bet_result.date))
+            const hasBetResult = !!result.data[0].bet_result
+
+            if(hasBetResult) {
+                const dataResult = transformArray(result.data[0].bet_result.result) 
+                
+                setResultToVerify(dataResult)
+                setNewDate(getFormatDateResult(result?.data[0].bet_result.date))
+            }
         }
 
         getResult()

@@ -6,19 +6,31 @@ import { ModalContext } from '../../context/ModalContext'
 import { BetsContext } from '../../context/BetsContext'
 import { api } from '../../service/api'
 import { UserContext } from '../../context/UserContext'
+import { CardBets } from '../cardBets'
 
 
 export function CheckResult() {
     const { openModal } = useContext(ModalContext)
-    const { allBets, removeSomeBet, replaceBetsWithNewOnes } = useContext(BetsContext)
+
+    const { allBets, 
+            allBetsSave, 
+            removeSomeBet, 
+            replaceBetsWithNewOnes,
+            cleanAllBets,
+            showBetsHistory,
+            createAndSaveBets,
+            getAllBetsHistory } = useContext(BetsContext)
 
     const { user } = useContext(UserContext)
 
     const [ showButtonsDelete, setShowButtonsDelete ] = useState<boolean>(false)
     const [ showSingleButtonDelete, setShowSingleButtonDelete ] = useState<boolean>(false)
+    const [ showAllBets, setShowAllBets ] = useState<boolean>(false)
+
+    const contentButton = showBetsHistory ? 'voltar' : 'meus jogos'
 
     const isEmpty = allBets.length === 0
-    const TIME_CLOSE_AUTOMATICALLY = 60 * 1000 * 3 //3 minutes
+    const TIME_CLOSE_AUTOMATICALLY = 60 * 1000 * 3 // 3 minutes
 
     const handleShowButtons = () => {
         setShowButtonsDelete(true)
@@ -78,52 +90,67 @@ export function CheckResult() {
         console.log(result.data.data.my_bets)
     }
 
-    const createAndSaveBets = async () => {
-        const { id } = user
+    const handleSaveBets = async () => {
+        const status = await createAndSaveBets(allBets, user.id)
 
-        const data = {
-            id_user: id,
-            my_bets: ['teste', 'test2']
+        if(status === 200) {
+            alert("salvou com sucesso")
+            cleanAllBets()
+
         }
+    }
 
-        const result = await api.post('bets', data)
-        console.log(result.data)
+    const handleGetAllBetHistory = () => {
+        getAllBetsHistory(user.id)
+        setShowAllBets(oldState => !oldState)
+
     }
 
     return (
         <div className="flex flex-col w-full h-96 bg-green-100">
             <h3 className="w-full text-center text-xs text-slate-500 border-b py-2 border-slave">confira seus jogos</h3>
             { showButtonsDelete ? 
-                (<div className="flex justify-center gap-2 w-full pb-2">
-                    <button className="w-44 p-2 bg-red-400 text-slate-200 rounded-md" 
+                (<div className="flex w-96 h-22 mx-auto mt-1 justify-center gap-1">
+                    <button className="w-40 p-1 bg-red-400 text-sm text-slate-200 rounded-md" 
                         onClick={openModal}>
                         excluir todos
                     </button>
-                    <button className="w-44 p-2 bg-green-400 rounded-md" 
+                    <button className="w-40 p-1 bg-green-400 text-sm rounded-md" 
                         onClick={hiddenButtons}>
-                        tudo ok?
+                        tudo ok!
                     </button>
                 </div>) : 
-                <div className="flex w-96 h-22 mx-auto items-center justify-end pr-3">
-                   { !isEmpty && < IoOptions className="text-2xl cursor-pointer" onClick={handleShowButtons}/> }
+                <div className="flex w-96 h-22 mx-auto mt-1 items-center justify-between px-3">
+                    <span 
+                        className="text-sm text-slate-700 font-bold border border-solid border-green-400 p-1 cursor-pointer bg-green-50 rounded-md"
+                        onClick={handleGetAllBetHistory}>
+                        {contentButton}
+                    </span>
+                   < IoOptions className="text-2xl cursor-pointer" onClick={handleShowButtons}/> 
                 </div> }
             <div className="w-full h-full overflow-y-auto p-8">
-                <div className="flex flex-col items-center gap-3 w-full h-auto py-2">
-                    { isEmpty ? <div className="flex flex-col gap-2 items-center justify-center w-72 h-32">
-                                    < ImFilesEmpty className="text-3xl text-slate-700"/>
-                                    <p className="uppercase text-sm text-slate-700">Sem jogos ainda!</p>
-                                </div>  : (allBets.map((bet, index) => 
+                <div className="flex flex-col items-center gap-3 w-full h-full py-2">
+
+                    { showAllBets ? 
+                            <div className={`flex flex-col gap-4 items-center ${ showBetsHistory ? 'h-full justify-start overflow-y-auto' : 'justify-center'} w-96 h-48 py-2 px-8`}>
+                                { allBetsSave?.map(bet => <CardBets key={bet.id_bet} quantity={bet.my_bets.length} date={bet.created_at} />) }
+                            </div>  : (isEmpty ? 
+                                    <>
+                                        < ImFilesEmpty className="text-3xl text-slate-700"/>
+                                        <p className="uppercase text-sm text-slate-700">Sem jogos ainda!</p>
+                                    </> : 
+                                (allBets.map((bet, index) => 
                         <div key={`${index}-${bet}`} className="flex items-center gap-4">
                             <span className="p-2 bg-slate-50 text-xl font-normal">{formatViewBet(bet)}</span>
                             { showSingleButtonDelete && < IoTrash className="text-2xl cursor-pointer text-red-500" onClick={() => removeSomeBet(bet)}/>}
-                        </div>)) }
+                        </div>)) )}
                 </div>
             </div>
             <div className="grid place-items-center w-full h-24 pb-2">
                 <button 
-                    className="w-80 h-12 bg-green-400 rounded uppercase text-xs text-slate-50"
-                    onClick={getAllBets}>
-                        conferir jogos
+                    className={`w-80 h-12 bg-green-400 ${isEmpty && 'cursor-not-allowed'} rounded uppercase text-xs text-slate-50`}
+                    onClick={handleSaveBets}>
+                        salvar jogos
                 </button>
             </div>
         </div>

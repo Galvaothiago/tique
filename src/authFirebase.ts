@@ -17,8 +17,8 @@ interface NewUserProp {
 
 const googleProvider = new GoogleAuthProvider();
 
-const emailAlreadyExist = async (userId: string) => {
-    const q = query(collection(db, "users"), where("uid", "==", userId));
+const emailAlreadyExist = async (userId: string, email: string) => {
+    const q = query(collection(db, "users"), where("uid", "==", userId), where("email", "==", email));
     const docs = await getDocs(q);
 
     if(docs.docs.length !== 0) {
@@ -31,11 +31,9 @@ const signInWithGoogle = async () => {
     
     try {
         const response = await signInWithPopup(auth, googleProvider);
-        
         const user = response.user;
         
-        const userAlreadyExists = emailAlreadyExist(user.uid)
-        
+        const userAlreadyExists = await emailAlreadyExist(user.uid, user.email)
         
         if (!userAlreadyExists) {
             await addDoc(collection(db, "users"), {
@@ -107,7 +105,6 @@ const signInWithCredentials = async (email: string, password: string) => {
         errorCode = err.code
     }
     
-    console.log()
     return { user, errorMessage, errorCode }
 
 }
@@ -117,9 +114,7 @@ const createAccountCredentials = async (newUser: NewUserProp) => {
     const email = newUser.email
     try {
         const { user } = await createUserWithEmailAndPassword(auth, email, password)
-
-        console.log(user.providerData)
-        const userAlreadyExist = await emailAlreadyExist(user.uid)
+        const userAlreadyExist = await emailAlreadyExist(user.uid, user.email)
 
         if(!userAlreadyExist) {
             await addDoc(collection(db, "users"), {
@@ -138,5 +133,4 @@ const createAccountCredentials = async (newUser: NewUserProp) => {
     }
 }
 
-// createUserWithEmailAndPassword()
 export { signInWithGoogle, signInWithCredentials, createAccountCredentials }

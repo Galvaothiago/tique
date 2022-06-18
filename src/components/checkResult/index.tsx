@@ -16,7 +16,8 @@ export function CheckResult() {
             allBetsSave, 
             removeSomeBet, 
             replaceBetsWithNewOnes, 
-            showBetsHistory, 
+            showBetsHistory,
+            createAndSaveBets,
             getAllBetsHistory } = useContext(BetsContext)
 
     const { user } = useContext(UserContext)
@@ -87,16 +88,24 @@ export function CheckResult() {
         console.log(result.data.data.my_bets)
     }
 
-    const createAndSaveBets = async () => {
-        const { id } = user
+    // const createAndSaveBets = async () => {
+    //     const { id } = user
 
-        const data = {
-            id_user: id,
-            my_bets: ['teste', 'test2']
+    //     const data = {
+    //         id_user: id,
+    //         my_bets: ['teste', 'test2']
+    //     }
+
+    //     const result = await api.post('bets', data)
+    //     console.log(result.data)
+    // }
+
+    const handleSaveBets = async () => {
+        const status = await createAndSaveBets(allBets, user.id)
+
+        if(status === 200) {
+            alert("salvou com sucesso")
         }
-
-        const result = await api.post('bets', data)
-        console.log(result.data)
     }
 
     const handleGetAllBetHistory = () => {
@@ -146,7 +155,7 @@ export function CheckResult() {
             <div className="grid place-items-center w-full h-24 pb-2">
                 <button 
                     className={`w-80 h-12 bg-green-400 ${isEmpty && 'cursor-not-allowed'} rounded uppercase text-xs text-slate-50`}
-                    onClick={getAllBets}>
+                    onClick={handleSaveBets}>
                         salvar jogos
                 </button>
             </div>

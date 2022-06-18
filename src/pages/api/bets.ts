@@ -47,6 +47,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(STATUS_OK).json({ id: betRef.id})
 
     } catch(err) {
+      res.status(400)
       console.log(err.message)
     }
 

@@ -19,6 +19,11 @@ interface BetsResultsProps {
     my_bets: string[]
 }
 
+interface ResponseBetsProp {
+    status: number, 
+    id: string
+}
+
 interface BetsProps {
     allBets: number[][],
     insertBet: (arr: number[]) => void,
@@ -28,7 +33,8 @@ interface BetsProps {
     handleShowBetsHistory: () => void,
     showBetsHistory: boolean,
     getAllBetsHistory: (userId: string) => void,
-    allBetsSave: SaveBetsProps[]
+    allBetsSave: SaveBetsProps[],
+    createAndSaveBets: (arrNumber: number[][], userId: string) => Promise<number> | null
 }
 
 interface ChildrenProps {
@@ -47,8 +53,6 @@ export function BetsProvider({ children }: ChildrenProps) {
     const insertBet = (arrayBet: number[]) => {
        bets = arrayBet
 
-       console.log("received by params: ",arrayBet)
-       console.log("all bets : ",allBets)
        setAllBets(oldBets => [...oldBets, bets])
     }
 
@@ -89,11 +93,41 @@ export function BetsProvider({ children }: ChildrenProps) {
             })
             
             setAllBetsSave(dataResults)
-            console.log(allBetsSave)
         }
 
     }
 
+    const transformArrNumberToString = (arrNumbers: number[][]) => {
+        const arrString = arrNumbers.map(arrNumber => {
+
+            return arrNumber.reduce((acc, number) => acc + String(number) + " - ","")
+                .substring(0, arrNumber.length + (arrNumber.length * 3) - 3)
+        })
+
+        return arrString
+    }
+
+    const createAndSaveBets = async (bets: number[][], userId: string) => {
+        const result = transformArrNumberToString(bets)
+
+        try {
+            const data = {
+                created_at: new Date().toISOString(),
+                id_user: userId,
+                my_bets: result
+            }
+
+            const  { status, data: { id } } = await api.post('bets', data)
+
+            return status
+
+        } catch(err) {
+            console.log(err)
+            alert(err)
+        }
+
+        return null
+    }
 
     return (
         <BetsContext.Provider
@@ -106,10 +140,12 @@ export function BetsProvider({ children }: ChildrenProps) {
                 handleShowBetsHistory,
                 showBetsHistory,
                 getAllBetsHistory,
-                allBetsSave
+                allBetsSave,
+                createAndSaveBets
             }}
         >
             { children }
+            { <div>teste</div> }
         </BetsContext.Provider>
     )
 }

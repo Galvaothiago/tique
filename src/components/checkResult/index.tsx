@@ -15,7 +15,8 @@ export function CheckResult() {
     const { allBets, 
             allBetsSave, 
             removeSomeBet, 
-            replaceBetsWithNewOnes, 
+            replaceBetsWithNewOnes,
+            cleanAllBets,
             showBetsHistory,
             createAndSaveBets,
             getAllBetsHistory } = useContext(BetsContext)
@@ -24,6 +25,7 @@ export function CheckResult() {
 
     const [ showButtonsDelete, setShowButtonsDelete ] = useState<boolean>(false)
     const [ showSingleButtonDelete, setShowSingleButtonDelete ] = useState<boolean>(false)
+    const [ showAllBets, setShowAllBets ] = useState<boolean>(false)
 
     const contentButton = showBetsHistory ? 'voltar' : 'meus jogos'
 
@@ -88,28 +90,19 @@ export function CheckResult() {
         console.log(result.data.data.my_bets)
     }
 
-    // const createAndSaveBets = async () => {
-    //     const { id } = user
-
-    //     const data = {
-    //         id_user: id,
-    //         my_bets: ['teste', 'test2']
-    //     }
-
-    //     const result = await api.post('bets', data)
-    //     console.log(result.data)
-    // }
-
     const handleSaveBets = async () => {
         const status = await createAndSaveBets(allBets, user.id)
 
         if(status === 200) {
             alert("salvou com sucesso")
+            cleanAllBets()
+
         }
     }
 
     const handleGetAllBetHistory = () => {
         getAllBetsHistory(user.id)
+        setShowAllBets(oldState => !oldState)
 
     }
 
@@ -136,20 +129,21 @@ export function CheckResult() {
                    < IoOptions className="text-2xl cursor-pointer" onClick={handleShowButtons}/> 
                 </div> }
             <div className="w-full h-full overflow-y-auto p-8">
-                <div className="flex flex-col items-center gap-3 w-full h-auto py-2">
+                <div className="flex flex-col items-center gap-3 w-full h-full py-2">
 
-                    { isEmpty ? <div className={`flex flex-col gap-4 items-center ${ showBetsHistory ? 'h-48 justify-start overflow-auto' : 'justify-center'} w-96 h-44 py-2 px-8`}>
-                                    { showBetsHistory ? 
-                                        ( allBetsSave?.map(bet => <CardBets key={bet.id_bet} quantity={bet.my_bets.length} date={bet.created_at} />)) :
-                                        <>
-                                            < ImFilesEmpty className="text-3xl text-slate-700"/>
-                                            <p className="uppercase text-sm text-slate-700">Sem jogos ainda!</p>
-                                        </>}
-                                </div>  : (allBets.map((bet, index) => 
+                    { showAllBets ? 
+                            <div className={`flex flex-col gap-4 items-center ${ showBetsHistory ? 'h-full justify-start overflow-y-auto' : 'justify-center'} w-96 h-48 py-2 px-8`}>
+                                { allBetsSave?.map(bet => <CardBets key={bet.id_bet} quantity={bet.my_bets.length} date={bet.created_at} />) }
+                            </div>  : (isEmpty ? 
+                                    <>
+                                        < ImFilesEmpty className="text-3xl text-slate-700"/>
+                                        <p className="uppercase text-sm text-slate-700">Sem jogos ainda!</p>
+                                    </> : 
+                                (allBets.map((bet, index) => 
                         <div key={`${index}-${bet}`} className="flex items-center gap-4">
                             <span className="p-2 bg-slate-50 text-xl font-normal">{formatViewBet(bet)}</span>
                             { showSingleButtonDelete && < IoTrash className="text-2xl cursor-pointer text-red-500" onClick={() => removeSomeBet(bet)}/>}
-                        </div>)) }
+                        </div>)) )}
                 </div>
             </div>
             <div className="grid place-items-center w-full h-24 pb-2">

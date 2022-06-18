@@ -85,14 +85,9 @@ export function CheckResult() {
         })
     }
 
-    const handleSaveBets = async () => {
-        const status = await createAndSaveBets(allBets, user.id)
-
-        if(status === 200) {
-            alert("salvou com sucesso")
-            cleanAllBets()
-
-        }
+    const handleSaveBets = () => {
+        createAndSaveBets(allBets, user.id)
+        cleanAllBets()
     }
 
     const handleGetAllBetHistory = () => {

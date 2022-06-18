@@ -24,8 +24,10 @@ export function CheckResult() {
     const [ showButtonsDelete, setShowButtonsDelete ] = useState<boolean>(false)
     const [ showSingleButtonDelete, setShowSingleButtonDelete ] = useState<boolean>(false)
 
+    const contentButton = showBetsHistory ? 'voltar' : 'meus jogos'
+
     const isEmpty = allBets.length === 0
-    const TIME_CLOSE_AUTOMATICALLY = 60 * 1000 * 3 //3 minutes
+    const TIME_CLOSE_AUTOMATICALLY = 60 * 1000 * 3 // 3 minutes
 
     const handleShowButtons = () => {
         setShowButtonsDelete(true)
@@ -97,32 +99,37 @@ export function CheckResult() {
         console.log(result.data)
     }
 
+    const handleGetAllBetHistory = () => {
+        getAllBetsHistory(user.id)
+
+    }
+
     return (
         <div className="flex flex-col w-full h-96 bg-green-100">
             <h3 className="w-full text-center text-xs text-slate-500 border-b py-2 border-slave">confira seus jogos</h3>
             { showButtonsDelete ? 
-                (<div className="flex justify-center gap-2 w-full pb-2">
-                    <button className="w-44 p-2 bg-red-400 text-slate-200 rounded-md" 
+                (<div className="flex w-96 h-22 mx-auto mt-1 justify-center gap-1">
+                    <button className="w-40 p-1 bg-red-400 text-sm text-slate-200 rounded-md" 
                         onClick={openModal}>
                         excluir todos
                     </button>
-                    <button className="w-44 p-2 bg-green-400 rounded-md" 
+                    <button className="w-40 p-1 bg-green-400 text-sm rounded-md" 
                         onClick={hiddenButtons}>
-                        tudo ok?
+                        tudo ok!
                     </button>
                 </div>) : 
-                <div className="flex w-96 h-22 mx-auto items-center justify-end pr-3">
-                   { !isEmpty && < IoOptions className="text-2xl cursor-pointer" onClick={handleShowButtons}/> }
+                <div className="flex w-96 h-22 mx-auto mt-1 items-center justify-between px-3">
+                    <span 
+                        className="text-sm text-slate-700 font-bold border border-solid border-green-400 p-1 cursor-pointer bg-green-50 rounded-md"
+                        onClick={handleGetAllBetHistory}>
+                        {contentButton}
+                    </span>
+                   < IoOptions className="text-2xl cursor-pointer" onClick={handleShowButtons}/> 
                 </div> }
             <div className="w-full h-full overflow-y-auto p-8">
                 <div className="flex flex-col items-center gap-3 w-full h-auto py-2">
-                    <div className="w-96 px-4 flex justify-end cursor-pointer">
-                        <span 
-                            className="text-sm text-slate-700 font-bold border border-solid border-green-400 p-2 bg-green-50 rounded-md"
-                            onClick={() => getAllBetsHistory(user.id)}>
-                        meus jogos</span>
-                    </div>
-                    { isEmpty ? <div className={`flex flex-col gap-4 items-center ${ showBetsHistory ? 'h-48 justify-start overflow-auto' : 'justify-center'} w-96 h-32 py-2 px-8`}>
+
+                    { isEmpty ? <div className={`flex flex-col gap-4 items-center ${ showBetsHistory ? 'h-48 justify-start overflow-auto' : 'justify-center'} w-96 h-44 py-2 px-8`}>
                                     { showBetsHistory ? 
                                         ( allBetsSave?.map(bet => <CardBets key={bet.id_bet} quantity={bet.my_bets.length} date={bet.created_at} />)) :
                                         <>

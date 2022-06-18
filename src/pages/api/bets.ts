@@ -14,7 +14,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       const docs = await getDocs(q);
 
       const dataResults = []
-      console.log("test api")
       if(docs.docs.length !== 0) {
 
         docs.docs.forEach(doc => {

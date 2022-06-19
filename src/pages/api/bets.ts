@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-import { collection, getDocs, where, query, addDoc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, where, query, addDoc, updateDoc, doc, getDoc } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../firebase";
 
@@ -74,6 +74,25 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     } catch(err) {
       console.log(err.message)
     }
+  }
+
+  if(req.method === 'PATCH') {
+    const betRef = String(req.query.betRef)
+    const bets = req.body.bets
+
+    try {
+      const docRef = doc(db, "bets", betRef);
+      await updateDoc(docRef, {
+        "my_bets": bets
+      })
+      
+      return res.status(204).json({})
+
+    } catch(err) {
+      console.log(err)
+      return res.status(400)
+    }
+
   }
 
 }

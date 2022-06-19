@@ -29,7 +29,7 @@ interface BetsProps {
     allBets: number[][],
     insertBet: (arr: number[]) => void,
     removeSomeBet: (arr: number[]) => void,
-    replaceBetsWithNewOnes: (newBets: number[][]) => void
+    replaceBetsWithNewOnes: (newBets: string[]) => void
     cleanAllBets: () => void,
     handleShowBetsHistory: () => void,
     showBetsHistory: boolean,
@@ -59,8 +59,9 @@ export function BetsProvider({ children }: ChildrenProps) {
        setAllBets(oldBets => [...oldBets, bets])
     }
 
-    const replaceBetsWithNewOnes = (newBets: number[][]) => {
-        setAllBets(newBets)
+    const replaceBetsWithNewOnes = (bets: string[]) => {
+        const myBets = transformArrStringToNumber(bets)
+        setAllBets(myBets)
     }
 
     const removeSomeBet = (arrayBet: number[]) => {
@@ -98,6 +99,16 @@ export function BetsProvider({ children }: ChildrenProps) {
             setAllBetsSave(dataResults)
         }
 
+    }
+
+    const transformArrStringToNumber = (bets: string[]) => {
+        const numberArr = bets.map(bet => {
+            const betToNumber = bet.split('-').map(item => Number(item.trim()))
+
+            return betToNumber
+        })
+
+        return numberArr
     }
 
     const transformArrNumberToString = (arrNumbers: number[][]) => {

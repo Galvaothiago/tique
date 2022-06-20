@@ -24,8 +24,8 @@ export function Login() {
     }
 
     return (
-        <div className="w-screen h-screen grid place-items-center px-2 bg-green-100" >
-            <div className="flex flex-col w-full max-w-md px-6 py-8 bg-white rounded-lg drop-shadow-lg md:px-8 lg:px-10">
+        <div className="w-screen h-screen grid place-items-center px-2 bg-gradient-to-bl from-green-50 to-green-300" >
+            <div className="flex flex-col w-full max-w-md px-6 py-8 bg-white rounded-lg drop-shadow-2xl md:px-8 lg:px-10">
                 <div className="flex flex-col items-center justify-center gap-4 text-center text-xl font-light text-slate-700 sm:text-2xl">
                     <p>Crie seus jogos da <span className="font-bold text-green-800">MEGA-SENA</span> e confira de forma rápida!</p>
                     <CloverEffect size="medium"/>

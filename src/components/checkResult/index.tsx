@@ -129,7 +129,7 @@ export function CheckResult() {
                     </div>
                    { !showAllBets && < IoOptions className="text-2xl cursor-pointer" onClick={handleShowButtons}/>} 
                 </div> }
-            <div className="w-full h-full mx-auto overflow-y-auto py-4">
+            <div className="w-full h-full mx-auto overflow-x-none overflow-y-auto py-4">
                 <div className="flex w-96 mx-auto flex-col items-center gap-4 py-2 px-12">
                     { showAllBets ? 
                                 ( allBetsSave?.map(bet => 

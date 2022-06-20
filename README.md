@@ -1,34 +1,66 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# Mega Tique
+# NextJs + TypeScript + Firebase
 
-First, run the development server:
+## Description
+
+Aplicação desenvolvida para resolver um problema relacionado a gerenciar os resultados e criação de jogos da mega sena. A motivação desse projeto foi observar alguns amigos, que gostam de fazer o famoso bolão de fim de ano, e após fazer todos os jogos ter que conferi-los depois.
+Pensando nisso decidi criar essa app que facilita na hora de conferir os jogos, basta cadastra-los uma vez e após sair o resultado, conferir de forma extremamente rápida.
+
+Algumas das funcionalidades até o presente momento:
+- Login social (Google provider/Autenticação fornecida pelo firebase).
+- Criar conta com email e senha (Gerenciado pelo firebase).
+- Geração dos 6 numeros (seguindo a premissa de dividir o volante em quandrantes e balancear os numeros ímpares a pares escolhidos).
+- Criar a própria aposta.
+- Editar o resultado (aposta sorteada) para facilitar na hora de conferir.
+- Deletar as apostas uma de cada vez ou massivo.
+- Listar as apostas que salvou.
+- Editar as apostas que salvou.
+- Conferir seus jogos com a aposta sorteada e visualizar os jogos que deram match com o resultado (acima de 3 numeros ja será exibido). 
+
+
+## Technology used:
+
+- [NextJs](https://nextjs.org/)
+- [TypeScript](https://www.typescriptlang.org/docs/)
+- [Firebase](https://firebase.google.com/docs)
+- [Axios](https://axios-http.com/docs/intro)
+
+## Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
+$ npm install
+```
+or
+
+```bash
+$ yarn
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Running the app
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```bash
+# development
+$ npm run dev
+```
+or
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+```bash
+# development
+$ yarn dev
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-## Learn More
+## Login screen
 
-To learn more about Next.js, take a look at the following resources:
+<img src="https://user-images.githubusercontent.com/72774408/174660233-b8fc17ee-9559-46f1-814d-04a8d17e7992.png" alt="tela de login" />
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Create account screen
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+<img src="https://user-images.githubusercontent.com/72774408/174660295-d01b3a51-3ac3-4b50-bea5-63a1ccf2d605.png" alt="tela de criar conta" />
 
-## Deploy on Vercel
+## Home 
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+<img src="https://user-images.githubusercontent.com/72774408/174660506-dd1a9874-c0ce-4c20-8f53-dd622fd3932f.png" alt="Tela home" />
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

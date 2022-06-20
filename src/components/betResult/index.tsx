@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineEdit } from 'react-icons/ai'
+import { ModalContext } from '../../context/ModalContext'
 import { UserContext } from '../../context/UserContext'
 import { api } from '../../service/api'
 import { getFormatDateResult } from '../../utils/formatDate'
@@ -12,6 +13,7 @@ export function BetResult() {
     const  quantityNumbersAllowed = 6
 
     const { user } = useContext(UserContext)
+    const { openModalWithMessage } = useContext(ModalContext)
 
     const transformArray = (arr: string) => {
         const newArr = arr.split('-')
@@ -34,16 +36,23 @@ export function BetResult() {
             if(isValidBet) {
                 setResultToVerify(finalResult)
                 
-                await api.put('/bets', {
-                    params: {
-                        userId: user.id
-                    },
-                    body: {
-                        bet_result :{
+                try {
+                    const { status } = await api.put('/betResult', {
+                        params: {
+                            userId: user.id
+                        },
+                        data: {
                             result: resultToSave
-                        } 
+                        }
+                    })
+
+                    if(status === 204) {
+                        openModalWithMessage("atualizado!")
                     }
-                })
+
+                } catch(err) {
+                    console.log(err)
+                }
             }
         }
     }
@@ -51,19 +60,19 @@ export function BetResult() {
 
     useEffect(() => {
         const getResult = async() => {
-            const result = await api.get('/bets', {
+            const result = await api.get('/betResult', {
                 params: {
                     userId: user.id
                 }
             })
             
-            const hasBetResult = !!result.data[0].bet_result
+            const hasBetResult = !!result.data[0].result
 
             if(hasBetResult) {
-                const dataResult = transformArray(result.data[0].bet_result.result) 
+                const dataResult = transformArray(result?.data[0].result) 
                 
                 setResultToVerify(dataResult)
-                setNewDate(getFormatDateResult(result?.data[0].bet_result.date))
+                setNewDate(getFormatDateResult(result?.data[0].date))
             }
         }
 

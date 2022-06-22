@@ -91,9 +91,12 @@ export function UserProvider({ children }: ChildrenProp) {
 
     useEffect(() => {
         const { userTique } = parseCookies()
-        const persistedUser = JSON.parse(userTique)
 
-        setUser(persistedUser)
+        if(!!userTique) {
+            const persistedUser = JSON.parse(userTique)
+            setUser(persistedUser)
+        }
+
     }, [])
 
     return (

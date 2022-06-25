@@ -8,6 +8,7 @@ import { BetsContext } from "../../context/BetsContext"
 import { ModalContext } from "../../context/ModalContext"
 import { UserContext } from "../../context/UserContext"
 import { CardBets } from "../cardBets"
+import { ButtonControlBet } from "../buttonControlBet"
 
 export function CheckResult() {
   const { openModal } = useContext(ModalContext)
@@ -88,8 +89,8 @@ export function CheckResult() {
   }
 
   const handleGetAllBetHistory = () => {
-    setShowAllBets((oldState) => !oldState)
     setShowButtonEdit(true)
+    setShowAllBets((oldState) => !oldState)
 
     if (!showAllBets) {
       getAllBetsHistory(user.id)
@@ -153,31 +154,20 @@ export function CheckResult() {
       ) : (
         <div className="flex w-96 h-22 mx-auto mt-2 mb-2 items-center justify-between px-3">
           <div>
-            <div>
-              {canEdit ? (
-                <span
-                  className="text-sm text-slate-700 font-bold border border-solid border-green-400 p-1 cursor-pointer bg-green-50 rounded-md"
-                  onClick={cancelActionEdit}
-                >
-                  cancelar
-                </span>
-              ) : (
-                <span
-                  className="text-sm text-slate-700 font-bold border border-solid border-green-400 p-1 cursor-pointer bg-green-50 rounded-md"
-                  onClick={handleGetAllBetHistory}
-                >
-                  {contentButton}
-                </span>
-              )}
-              {showButtonEdit && !canEdit && !isNewBet && (
-                <span
-                  className="text-sm text-slate-700 font-bold border border-solid border-green-400 ml-1 p-1 cursor-pointer bg-green-50 rounded-md"
-                  onClick={permitEditBet}
-                >
-                  editar
-                </span>
-              )}
-            </div>
+            {canEdit ? (
+              <ButtonControlBet
+                funcAction={cancelActionEdit}
+                content="cancelar"
+              />
+            ) : (
+              <ButtonControlBet
+                funcAction={handleGetAllBetHistory}
+                content={contentButton}
+              />
+            )}
+            {showButtonEdit && !canEdit && !isNewBet && (
+              <ButtonControlBet funcAction={permitEditBet} content="editar" />
+            )}
           </div>
           {!showAllBets && (
             <div className="flex items-center gap-2">
@@ -195,8 +185,8 @@ export function CheckResult() {
           )}
         </div>
       )}
-      <div className="w-full h-full mx-auto overflow-x-none overflow-y-auto py-4">
-        <div className="flex w-96 mx-auto flex-col items-center gap-4 py-2 px-12">
+      <div className="w-full h-full mx-auto overflow-y-auto py-4 overflow-x-hidden">
+        <div className="flex w-96 mx-auto flex-col items-center gap-4 px-12">
           {showAllBets ? (
             allBetsSave?.map((bet) => (
               <CardBets
@@ -235,7 +225,7 @@ export function CheckResult() {
         </div>
       </div>
       {!showAllBets && (
-        <div className="grid place-items-center w-full h-24 pb-2">
+        <div className="grid place-items-center w-full h-24 py-2">
           {canEdit ? (
             <button
               className={`w-80 h-12 border border-emerald-600 bg-gradient-to-l from-emerald-600 to-emerald-400 font-bold  ${

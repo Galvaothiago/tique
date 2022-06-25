@@ -93,9 +93,7 @@ export function BetsProvider({ children }: ChildrenProps) {
   }
 
   const getAllBetsHistory = async (userId: string) => {
-    handleShowBetsHistory()
-
-    if (!showBetsHistory) {
+    try {
       const allBetsData = await api.get("/bets", { params: { userId } })
       const dataResults = []
 
@@ -109,6 +107,8 @@ export function BetsProvider({ children }: ChildrenProps) {
       })
 
       setAllBetsSave(dataResults)
+    } catch (err) {
+      console.log(err.message)
     }
   }
 

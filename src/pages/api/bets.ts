@@ -77,8 +77,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if(req.method === 'PATCH') {
-    const betRef = String(req.query.betRef)
-    const bets = req.body.bets
+    const betRef = String(req.body.betRef)
+    const bets = req.body.data
 
     try {
       const docRef = doc(db, "bets", betRef);

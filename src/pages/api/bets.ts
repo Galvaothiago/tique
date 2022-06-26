@@ -1,98 +1,107 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-import { collection, getDocs, where, query, addDoc, updateDoc, doc, getDoc } from "firebase/firestore";
-import { NextApiRequest, NextApiResponse } from "next";
-import db from "../../../firebase";
+import {
+  collection,
+  getDocs,
+  where,
+  query,
+  addDoc,
+  updateDoc,
+  doc,
+  getDoc,
+} from "firebase/firestore"
+import { NextApiRequest, NextApiResponse } from "next"
+import db from "../../../firebase"
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const userId = req.query.userId
   const STATUS_OK = 200
+  const STATUS_CREATED = 201
+  const STATUS_NO_CONTENT = 204
+  const STATUS_NOT_FOUND = 404
+  const STATUS_BAD_REQUEST = 400
 
-  if(req.method === 'GET') {
+  if (req.method === "GET") {
     try {
-      const q = query(collection(db, "bets"), where("id_user", "==", userId));
-      const docs = await getDocs(q);
+      const q = query(collection(db, "bets"), where("id_user", "==", userId))
+      const docs = await getDocs(q)
 
       const dataResults = []
-      if(docs.docs.length !== 0) {
-
-        docs.docs.forEach(doc => {
+      if (docs.docs.length !== 0) {
+        docs.docs.forEach((doc) => {
           const dataRefId = doc.id
 
           const data = {
             ...doc.data(),
-            dataRefId
+            dataRefId,
           }
 
           dataResults.push(data)
         })
 
-        
         return res.status(STATUS_OK).json(dataResults)
       }
 
-      return res.status(404).json({ message: "NOT FOUND" })
-
-    } catch(err) {
+      return res.status(STATUS_NOT_FOUND).json({ message: "NOT FOUND" })
+    } catch (err) {
       console.log(err.message)
     }
   }
 
-  if(req.method === 'POST') {
+  if (req.method === "POST") {
     const data = req.body
 
     try {
+      if (!data) {
+        res.status(STATUS_BAD_REQUEST)
+      }
       const betRef = await addDoc(collection(db, "bets"), data)
-      
-      res.status(STATUS_OK).json({ id: betRef.id})
 
-    } catch(err) {
-      res.status(400)
+      res.status(STATUS_CREATED).json({ id: betRef.id })
+    } catch (err) {
+      res.status(STATUS_BAD_REQUEST)
       console.log(err.message)
     }
-
   }
 
-  if(req.method === 'PUT') {
-
+  if (req.method === "PUT") {
     const data = req.body
 
     try {
-      const q = query(collection(db, "bets"), where("id_user", "==", data.params.userId));
-      const docs = await getDocs(q);
+      const q = query(
+        collection(db, "bets"),
+        where("id_user", "==", data.params.userId)
+      )
+      const docs = await getDocs(q)
       const dataRef = docs.docs[0].ref
 
-      if(docs.docs.length !== 0) {
+      if (docs.docs.length !== 0) {
         await updateDoc(dataRef, {
-          "bet_result.date": (new Date()).toISOString(),
-          "bet_result.result": data.body.bet_result.result
+          "bet_result.date": new Date().toISOString(),
+          "bet_result.result": data.body.bet_result.result,
         })
 
-        return res.status(204)
+        return res.status(STATUS_NO_CONTENT)
       }
-
-    } catch(err) {
+    } catch (err) {
       console.log(err.message)
     }
   }
 
-  if(req.method === 'PATCH') {
+  if (req.method === "PATCH") {
     const betRef = String(req.body.betRef)
     const bets = req.body.data
 
     try {
-      const docRef = doc(db, "bets", betRef);
+      const docRef = doc(db, "bets", betRef)
       await updateDoc(docRef, {
-        "my_bets": bets
+        my_bets: bets,
       })
-      
-      return res.status(204).json({})
 
-    } catch(err) {
+      return res.status(STATUS_NO_CONTENT).json({})
+    } catch (err) {
       console.log(err)
-      return res.status(400)
+      return res.status(STATUS_BAD_REQUEST)
     }
-
   }
-
 }

@@ -13,9 +13,10 @@ module.exports = {
       },
       animation: {
         bounce: "bounce 1.75s infinite",
+        spin: "spin 1s linear infinite",
         appear: "appear .3s ease-in-out",
       },
     },
   },
   plugins: [],
-};
+}

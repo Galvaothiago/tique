@@ -10,6 +10,7 @@ import { ModalContext } from "../../context/ModalContext"
 import { UserContext } from "../../context/UserContext"
 import { ButtonControlBet } from "../buttonControlBet"
 import { CardBets } from "../cardBets"
+import { CloverEffect } from "../cloverEffect"
 
 export function CheckResult() {
   const { openModal } = useContext(ModalContext)
@@ -28,7 +29,7 @@ export function CheckResult() {
   } = useContext(BetsContext)
 
   const { user } = useContext(UserContext)
-  const { handleCompareBets } = useContext(CompareBetsContext)
+  const { handleCompareBets, loading } = useContext(CompareBetsContext)
 
   const [showButtonsDelete, setShowButtonsDelete] = useState<boolean>(false)
   const [showSingleButtonDelete, setShowSingleButtonDelete] =
@@ -248,10 +249,14 @@ export function CheckResult() {
               </button>
             ) : (
               <button
-                className="w-80 h-12 bg-gradient-to-l from-slate-100 to-slate-50 border border-emerald-300 rounded uppercase text-sm font-bold text-slate-600"
+                className="w-80 h-12 grid place-items-center bg-gradient-to-l from-slate-100 to-slate-50 border border-emerald-300 rounded uppercase text-sm font-bold text-slate-600"
                 onClick={handleCompareBets}
               >
-                conferir jogos
+                {loading ? (
+                  <CloverEffect animationType="spin" size="small" />
+                ) : (
+                  "conferir jogos"
+                )}
               </button>
             ))
           )}

@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { IoClose } from "react-icons/io5"
-import { MatchResultProps } from "../../utils/compareBets"
+import { BetsContext } from "../../context/BetsContext"
+import { CompareBetsContext } from "../../context/CompareBestContext"
+import { mappingAllBets, MatchResultProps } from "../../utils/compareBets"
 
 interface ModalBetResultProps {
   data: MatchResultProps[]
@@ -8,7 +10,13 @@ interface ModalBetResultProps {
 }
 
 export function ModalBetResult({ data, closeModal }: ModalBetResultProps) {
+  const { allBets } = useContext(BetsContext)
+  const { resultBetDatabase } = useContext(CompareBetsContext)
+
   const [dataBet, setDataBet] = useState<MatchResultProps[] | null>(null)
+  const [detailResult, setDetailResult] = useState([])
+  const [showDetailResult, setShowDetailResult] = useState<boolean>(false)
+
   const isEmpty = dataBet?.length === 0
 
   const removeDataEmpty = () => {
@@ -48,6 +56,16 @@ export function ModalBetResult({ data, closeModal }: ModalBetResultProps) {
     return finalBet
   }
 
+  const handleCompleteResult = () => {
+    if (!showDetailResult) {
+      const result = mappingAllBets(allBets, resultBetDatabase)
+
+      setDetailResult(result)
+    }
+
+    setShowDetailResult((oldState) => !oldState)
+  }
+
   useEffect(() => {
     removeDataEmpty()
   }, [])
@@ -68,9 +86,12 @@ export function ModalBetResult({ data, closeModal }: ModalBetResultProps) {
         <div className="w-full h-auto">
           {isEmpty ? (
             <div className="w-full h-80 flex flex-col items-center justify-center gap-2">
-              <span>Nenhum acerto &#128533;</span>
-              <button className="p-3 bg-emerald-300 text-xs mt-1 rounded-md text-slate-700">
-                resultado completo
+              <span>Nenhuma aposta premiada &#128533;</span>
+              <button
+                className="p-3 bg-emerald-300 text-xs mt-1 rounded-md text-slate-700"
+                onClick={handleCompleteResult}
+              >
+                {!showDetailResult ? "mais detalhes" : "esconder"}
               </button>
             </div>
           ) : (
@@ -92,14 +113,41 @@ export function ModalBetResult({ data, closeModal }: ModalBetResultProps) {
                   </div>
                 ))}
               </div>
-              <div className="w-full py-2 mt-4 pr-8 text-right text-sm">
-                <button className="p-3 bg-emerald-300 text-xs mt-1 rounded-md text-slate-700">
-                  resultado completo
+              <div className="w-full py-2 mt-4 pr-6 md:pr-8 text-right text-sm">
+                <button
+                  className="p-3 bg-emerald-300 text-xs mt-1 rounded-md text-slate-700"
+                  onClick={handleCompleteResult}
+                >
+                  {!showDetailResult ? "mais detalhes" : "esconder"}
                 </button>
               </div>
             </>
           )}
         </div>
+        {showDetailResult && (
+          <div className="w-full h-32 px-6 md:px-14 py-4">
+            <table className="w-full text-sm text-center text-gray-500">
+              <thead className="text-xs text-gray-700 uppercase bg-emerald-100">
+                <tr>
+                  <th className="px-1 py-3 bg-emerald-100">Nenhum acerto</th>
+                  <th className="px-1 py-2 bg-emerald-100">1 acerto</th>
+                  <th className="px-1 py-2 bg-emerald-100">2 acertos</th>
+                  <th className="px-1 py-2 bg-emerald-100">3 acertos</th>
+                  <th className="px-1 py-2 bg-emerald-300">4 acertos</th>
+                  <th className="px-1 py-2 bg-emerald-400">5 acertos</th>
+                  <th className="px-1 py-2 bg-emerald-500">6 acertos</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b bg-white">
+                  {detailResult.map((result) => (
+                    <td className="px-1 py-2">{result.value}</td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )}
         <div className="w-full h-12 p-4 text-sm bg-emerald-50">
           {!isEmpty && (
             <span>Parabéns, seu jogo foi premiado! &#127881; &#128184;</span>

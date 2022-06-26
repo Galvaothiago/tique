@@ -11,6 +11,8 @@ interface ChildrenProp {
 
 interface CompareBetsProps {
   handleCompareBets: () => void
+  resultBetDatabase: number[]
+  loading: boolean
 }
 
 export const CompareBetsContext = createContext({} as CompareBetsProps)
@@ -21,9 +23,12 @@ export function CompareBetsProvider({ children }: ChildrenProp) {
 
   const [resultBets, setResultBets] = useState<MatchResultProps[]>()
   const [showModalResult, setShowModalResult] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [resultBetDatabase, setResultBetDatabase] = useState<number[]>()
 
   const handleCompareBets = async () => {
     try {
+      setLoading(true)
       const result = await api.get("/betResult", {
         params: {
           userId: user.id,
@@ -35,7 +40,12 @@ export function CompareBetsProvider({ children }: ChildrenProp) {
         transformStringToArrNumber(result.data[0].result)
       )
 
-      setShowModalResult(true)
+      setResultBetDatabase(transformStringToArrNumber(result.data[0].result))
+
+      setTimeout(() => {
+        setShowModalResult(true)
+        setLoading(false)
+      }, 1500)
       setResultBets(infoBetResult)
     } catch (err) {
       console.log(err.message)
@@ -55,6 +65,8 @@ export function CompareBetsProvider({ children }: ChildrenProp) {
     <CompareBetsContext.Provider
       value={{
         handleCompareBets,
+        resultBetDatabase,
+        loading,
       }}
     >
       {children}

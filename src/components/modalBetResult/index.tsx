@@ -54,7 +54,7 @@ export function ModalBetResult({ data, closeModal }: ModalBetResultProps) {
 
   return (
     <div className="flex justify-center items-center w-full h-screen bg-slate-500/20 inset-0 p-2 fixed">
-      <div className=" w-full md:h-auto h-full max-w-lg bg-white">
+      <div className=" w-full h-auto max-w-lg bg-white">
         <div className="flex justify-between items-center p-5 border-b bg-emerald-300">
           <h3 className="text-xl font-medium text-gray-600">Resultado</h3>
           <button
@@ -75,7 +75,7 @@ export function ModalBetResult({ data, closeModal }: ModalBetResultProps) {
             </div>
           ) : (
             <>
-              <div className="w-full h-full  px-14 py-8 flex flex-col items-center justify-center gap-4">
+              <div className="w-full h-full  px-6 md:px-14 py-8 flex flex-col items-center justify-center gap-4">
                 {dataBet?.map((data) => (
                   <div className="w-full h-28 bg-white flex shadow-lg">
                     <span className="w-20 h-full flex flex-col justify-center items-center gap-1 bg-emerald-50">

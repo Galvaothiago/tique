@@ -53,8 +53,8 @@ export function ModalBetResult({ data, closeModal }: ModalBetResultProps) {
   }, [])
 
   return (
-    <div className="flex justify-center items-center w-full h-screen bg-slate-500/20 inset-0 p-2 fixed">
-      <div className=" w-full h-auto max-w-lg bg-white">
+    <div className="flex justify-center items-center w-full h-screen bg-slate-900/40 inset-0 p-2 fixed">
+      <div className=" w-full h-auto max-w-lg bg-slate-100">
         <div className="flex justify-between items-center p-5 border-b bg-emerald-300">
           <h3 className="text-xl font-medium text-gray-600">Resultado</h3>
           <button
@@ -70,7 +70,7 @@ export function ModalBetResult({ data, closeModal }: ModalBetResultProps) {
             <div className="w-full h-80 flex flex-col items-center justify-center gap-2">
               <span>Nenhum acerto &#128533;</span>
               <button className="p-3 bg-emerald-300 text-xs mt-1 rounded-md text-slate-700">
-                histórico completo
+                resultado completo
               </button>
             </div>
           ) : (
@@ -94,7 +94,7 @@ export function ModalBetResult({ data, closeModal }: ModalBetResultProps) {
               </div>
               <div className="w-full py-2 mt-4 pr-8 text-right text-sm">
                 <button className="p-3 bg-emerald-300 text-xs mt-1 rounded-md text-slate-700">
-                  histórico completo
+                  resultado completo
                 </button>
               </div>
             </>

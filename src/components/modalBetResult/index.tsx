@@ -125,7 +125,7 @@ export function ModalBetResult({ data, closeModal }: ModalBetResultProps) {
           )}
         </div>
         {showDetailResult && (
-          <div className="w-full h-32 px-6 md:px-14 py-4">
+          <div className="w-full h-32 px-6 md:px-14 py-4 overflow-y-auto">
             <table className="w-full text-sm text-center text-gray-500">
               <thead className="text-xs text-gray-700 uppercase bg-emerald-100">
                 <tr>

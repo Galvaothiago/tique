@@ -1,14 +1,15 @@
 import { useContext, useState } from "react"
 import { ImFilesEmpty } from "react-icons//im"
 import { AiOutlineCheck } from "react-icons/ai"
+import { BiPlus } from "react-icons/bi"
 import { CgTrash } from "react-icons/cg"
 import { IoOptions } from "react-icons/io5"
-import { BiPlus } from "react-icons/bi"
 import { BetsContext } from "../../context/BetsContext"
+import { CompareBetsContext } from "../../context/CompareBestContext"
 import { ModalContext } from "../../context/ModalContext"
 import { UserContext } from "../../context/UserContext"
-import { CardBets } from "../cardBets"
 import { ButtonControlBet } from "../buttonControlBet"
+import { CardBets } from "../cardBets"
 
 export function CheckResult() {
   const { openModal } = useContext(ModalContext)
@@ -27,6 +28,7 @@ export function CheckResult() {
   } = useContext(BetsContext)
 
   const { user } = useContext(UserContext)
+  const { handleCompareBets } = useContext(CompareBetsContext)
 
   const [showButtonsDelete, setShowButtonsDelete] = useState<boolean>(false)
   const [showSingleButtonDelete, setShowSingleButtonDelete] =
@@ -245,7 +247,10 @@ export function CheckResult() {
                 salvar jogos
               </button>
             ) : (
-              <button className="w-80 h-12 bg-gradient-to-l from-slate-100 to-slate-50 border border-emerald-300 rounded uppercase text-sm font-bold text-slate-600">
+              <button
+                className="w-80 h-12 bg-gradient-to-l from-slate-100 to-slate-50 border border-emerald-300 rounded uppercase text-sm font-bold text-slate-600"
+                onClick={handleCompareBets}
+              >
                 conferir jogos
               </button>
             ))

@@ -11,7 +11,7 @@ export default function Home() {
 
   return (
     <>
-      {false ? (
+      {!user ? (
         <Login />
       ) : (
         <div className="xl:container mx-auto h-full bg-slate-200">

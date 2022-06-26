@@ -2,7 +2,7 @@ import { GiClover } from "react-icons/gi"
 
 interface CloverProps {
   animation?: boolean
-  animationType: "bounce" | "spin"
+  animationType?: "bounce" | "spin"
   size: "small" | "medium" | "large"
 }
 

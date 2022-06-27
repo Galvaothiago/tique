@@ -133,9 +133,9 @@ export function ModalBetResult({ data, closeModal }: ModalBetResultProps) {
                   <th className="px-1 py-2 bg-emerald-100">1 acerto</th>
                   <th className="px-1 py-2 bg-emerald-100">2 acertos</th>
                   <th className="px-1 py-2 bg-emerald-100">3 acertos</th>
-                  <th className="px-1 py-2 bg-emerald-300">4 acertos</th>
-                  <th className="px-1 py-2 bg-emerald-400">5 acertos</th>
-                  <th className="px-1 py-2 bg-emerald-500">6 acertos</th>
+                  <th className="px-1 py-2 bg-emerald-200">4 acertos</th>
+                  <th className="px-1 py-2 bg-emerald-300">5 acertos</th>
+                  <th className="px-1 py-2 bg-emerald-400">6 acertos</th>
                 </tr>
               </thead>
               <tbody>

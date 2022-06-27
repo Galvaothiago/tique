@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
 import {
+  addDoc,
   collection,
   getDocs,
   query,
@@ -14,6 +15,7 @@ const STATUS_OK = 200
 const STATUS_NOT_FOUND = 404
 const STATUS_NO_CONTENT = 204
 const STATUS_CREATED = 201
+const STATUS_BAD_REQUEST = 400
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const userId = req.query.userId
@@ -43,6 +45,32 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       }
 
       return res.status(STATUS_NOT_FOUND).json({ message: "NOT FOUND" })
+    } catch (err) {
+      console.log(err.message)
+    }
+  }
+
+  if (req.method === "POST") {
+    const { userId } = req.body.params
+
+    try {
+      const q = query(
+        collection(db, "bets_results"),
+        where("user_id", "==", userId)
+      )
+      const docs = await getDocs(q)
+
+      if (docs.docs.length === 0) {
+        await addDoc(collection(db, "bets_results"), {
+          date: new Date().toISOString(),
+          result: "1 - 9 - 25 - 27 - 30 - 56",
+          user_id: userId,
+        })
+
+        return res.status(STATUS_CREATED)
+      }
+
+      return res.status(STATUS_NO_CONTENT)
     } catch (err) {
       console.log(err.message)
     }

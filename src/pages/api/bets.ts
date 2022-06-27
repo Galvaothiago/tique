@@ -9,6 +9,7 @@ import {
   updateDoc,
   doc,
   getDoc,
+  deleteDoc,
 } from "firebase/firestore"
 import { NextApiRequest, NextApiResponse } from "next"
 import db from "../../../firebase"
@@ -20,6 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const STATUS_NO_CONTENT = 204
   const STATUS_NOT_FOUND = 404
   const STATUS_BAD_REQUEST = 400
+  const STATUS_UNAUTHORIZED = 401
 
   if (req.method === "GET") {
     try {
@@ -81,7 +83,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           "bet_result.result": data.body.bet_result.result,
         })
 
-        return res.status(STATUS_NO_CONTENT)
+        return res.status(STATUS_NO_CONTENT).json({})
       }
     } catch (err) {
       console.log(err.message)
@@ -101,7 +103,28 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(STATUS_NO_CONTENT).json({})
     } catch (err) {
       console.log(err)
-      return res.status(STATUS_BAD_REQUEST)
+      return res.status(STATUS_BAD_REQUEST).json({})
+    }
+  }
+
+  if (req.method === "DELETE") {
+    const betRef = req.body.betRef
+    const userId = req.body.userId
+
+    try {
+      if (!userId) return res.status(STATUS_UNAUTHORIZED).json({})
+
+      const docRef = doc(db, "bets", betRef)
+      const docSnap = await getDoc(docRef)
+
+      if (docSnap.data().id_user !== userId) {
+        return res.status(STATUS_UNAUTHORIZED).json({})
+      }
+
+      await deleteDoc(docRef)
+      return res.status(STATUS_NO_CONTENT)
+    } catch (err) {
+      console.log(err)
     }
   }
 }

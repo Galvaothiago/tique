@@ -1,7 +1,7 @@
 export const getFormatDateResult = (date: string) => {
-    const firstDate = date.split('T')
-    
-    const partsDate = firstDate[0].split('-')
+  const firstDate = date?.split("T")
 
-    return `${partsDate[2]}/${partsDate[1]}/${partsDate[0]}`
+  const partsDate = firstDate[0]?.split("-")
+
+  return `${partsDate[2]}/${partsDate[1]}/${partsDate[0]}`
 }

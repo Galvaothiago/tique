@@ -11,15 +11,15 @@ function MyApp({ Component, pageProps }) {
       <Head>
         <title>Mega Tique</title>
       </Head>
-      <UserProvider>
-        <BetsProvider>
-          <CompareBetsProvider>
-            <ModalProvide>
+      <ModalProvide>
+        <UserProvider>
+          <BetsProvider>
+            <CompareBetsProvider>
               <Component {...pageProps} />
-            </ModalProvide>
-          </CompareBetsProvider>
-        </BetsProvider>
-      </UserProvider>
+            </CompareBetsProvider>
+          </BetsProvider>
+        </UserProvider>
+      </ModalProvide>
     </>
   )
 }

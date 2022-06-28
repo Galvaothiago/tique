@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   UserCredential,
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
 } from "firebase/auth"
 import {
   query,
@@ -157,4 +158,17 @@ const createAccountCredentials = async (newUser: NewUserProp) => {
   }
 }
 
-export { signInWithGoogle, signInWithCredentials, createAccountCredentials }
+const resetPasswordByEmail = async (email: string) => {
+  try {
+    await sendPasswordResetEmail(auth, email)
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+export {
+  signInWithGoogle,
+  signInWithCredentials,
+  createAccountCredentials,
+  resetPasswordByEmail,
+}

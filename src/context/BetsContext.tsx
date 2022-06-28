@@ -1,6 +1,7 @@
-import { createContext, ReactNode, useState } from "react"
+import { createContext, ReactNode, useContext, useState } from "react"
 import { ModalAction } from "../components/modalAction"
 import { api } from "../service/api"
+import { ModalContext } from "./ModalContext"
 
 interface SaveBetsProps {
   created_at: string
@@ -53,6 +54,8 @@ export function BetsProvider({ children }: ChildrenProps) {
   const [messageModalAction, setMessageModalAction] = useState<string>("")
   const [showModalAction, setShowModalAction] = useState<boolean>(false)
   const [canInsertBets, setCanInsertBets] = useState<boolean>(true)
+
+  const { openModalAndCloseAutomatically } = useContext(ModalContext)
 
   let bets = []
 
@@ -145,12 +148,7 @@ export function BetsProvider({ children }: ChildrenProps) {
       })
 
       if (status === 204) {
-        setMessageModalAction("Aposta atualizada com sucesso!")
-        setShowModalAction(true)
-
-        setTimeout(() => {
-          setShowModalAction(false)
-        }, 1500)
+        openModalAndCloseAutomatically("Aposta atualizada com sucesso!", "fail")
       }
     } catch (err) {
       console.log(err)
@@ -173,12 +171,7 @@ export function BetsProvider({ children }: ChildrenProps) {
       } = await api.post("bets", data)
 
       if (status === 200) {
-        setMessageModalAction("Aposta salva com sucesso!")
-        setShowModalAction(true)
-
-        setTimeout(() => {
-          setShowModalAction(false)
-        }, 1500)
+        openModalAndCloseAutomatically("Aposta salva com sucesso!", "fail")
       }
     } catch (err) {
       console.log(err)
@@ -205,7 +198,6 @@ export function BetsProvider({ children }: ChildrenProps) {
       }}
     >
       {children}
-      {showModalAction && <ModalAction message={messageModalAction} />}
     </BetsContext.Provider>
   )
 }

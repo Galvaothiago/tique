@@ -15,7 +15,7 @@ export function BetResult() {
   const quantityNumbersAllowed = 6
 
   const { user } = useContext(UserContext)
-  const { openModalWithMessage } = useContext(ModalContext)
+  const { openModalAndCloseAutomatically } = useContext(ModalContext)
 
   const transformArray = (arr: string) => {
     const newArr = arr.split("-")
@@ -52,7 +52,10 @@ export function BetResult() {
           })
 
           if (status === 204) {
-            openModalWithMessage("atualizado!")
+            openModalAndCloseAutomatically(
+              "Aposta criada com sucesso!",
+              "success"
+            )
           }
         } catch (err) {
           console.log(err)

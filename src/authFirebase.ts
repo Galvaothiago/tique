@@ -1,21 +1,12 @@
 import {
-  GoogleAuthProvider,
-  signInWithPopup,
-  signInWithEmailAndPassword,
-  UserCredential,
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  UserCredential,
 } from "firebase/auth"
-import {
-  query,
-  getDocs,
-  collection,
-  where,
-  addDoc,
-  setDoc,
-  doc,
-} from "firebase/firestore"
-
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore"
 import db, { auth } from "../firebase"
 import { User } from "./context/UserContext"
 import { api } from "./service/api"

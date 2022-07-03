@@ -31,7 +31,7 @@ export default function CreateAccount() {
     if (checkInformationBeforeSend()) {
       await createAccountCredentials(newUser)
 
-      openModalAndCloseAutomatically("", "success")
+      openModalAndCloseAutomatically("Cadastro realizado com sucesso!", "success")
       router.push("/")
 
       return

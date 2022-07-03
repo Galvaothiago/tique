@@ -1,20 +1,20 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { ImFilesEmpty } from "react-icons//im"
 import { AiOutlineCheck } from "react-icons/ai"
 import { BiPlus } from "react-icons/bi"
 import { CgTrash } from "react-icons/cg"
 import { IoOptions } from "react-icons/io5"
+import { BsFillGearFill } from "react-icons/bs"
 import { BetsContext } from "../../context/BetsContext"
 import { CompareBetsContext } from "../../context/CompareBestContext"
-import { ModalContext } from "../../context/ModalContext"
+
 import { UserContext } from "../../context/UserContext"
 import { ButtonControlBet } from "../buttonControlBet"
 import { CardBets } from "../cardBets"
 import { CloverEffect } from "../cloverEffect"
+import { ButtonDeleteBet } from "../buttonDeleteBet"
 
 export function CheckResult() {
-  const { openModal } = useContext(ModalContext)
-
   const {
     allBets,
     allBetsSave,
@@ -30,19 +30,23 @@ export function CheckResult() {
 
   const { user } = useContext(UserContext)
   const { handleCompareBets, loading } = useContext(CompareBetsContext)
+  const { handleOpenModalDelete } = useContext(BetsContext)
 
   const [showButtonsDelete, setShowButtonsDelete] = useState<boolean>(false)
-  const [showSingleButtonDelete, setShowSingleButtonDelete] =
-    useState<boolean>(false)
+  const [showSingleButtonDelete, setShowSingleButtonDelete] = useState<boolean>(false)
   const [showAllBets, setShowAllBets] = useState<boolean>(false)
   const [betRefUpdate, setBetRefUpdate] = useState<string>("")
   const [canEdit, setCanEdit] = useState<boolean>(false)
   const [showButtonEdit, setShowButtonEdit] = useState<boolean>(false)
   const [isNewBet, setIsNewBet] = useState<boolean>()
+  const [showDeleteGroupBet, setShowDeleteGroupBet] = useState<boolean>(false)
 
   const contentButton = showAllBets ? "voltar" : "meus jogos"
 
   const isEmpty = allBets.length === 0
+  const allBetsEmpy = allBetsSave?.length === 0
+  const hasOnlyOneBet = allBets.length === 1
+
   const TIME_CLOSE_AUTOMATICALLY = 60 * 1000 * 3 // 3 minutes
 
   const handleShowButtons = () => {
@@ -79,10 +83,7 @@ export function CheckResult() {
       return acc
     }, "")
 
-    const finalBet = formatedBet.substring(
-      INITAL_STRING,
-      formatedBet.length - REMOVE_FROM
-    )
+    const finalBet = formatedBet.substring(INITAL_STRING, formatedBet.length - REMOVE_FROM)
     return finalBet
   }
 
@@ -94,6 +95,7 @@ export function CheckResult() {
   const handleGetAllBetHistory = () => {
     setShowButtonEdit(true)
     setShowAllBets((oldState) => !oldState)
+    setShowDeleteGroupBet(false)
 
     if (!showAllBets) {
       getAllBetsHistory(user.id)
@@ -134,19 +136,27 @@ export function CheckResult() {
     setIsNewBet(true)
   }
 
+  const showButtonDeleteGroupBet = () => {
+    setShowDeleteGroupBet(true)
+  }
+
+  useEffect(() => {
+    prepareToCreateNewBet()
+  }, [])
+
   return (
     <div className="flex flex-col w-full h-96 bg-green-100">
-      <h3 className="w-full text-center text-xs text-slate-500 border-b py-2 border-slave">
-        confira seus jogos
-      </h3>
-      {showButtonsDelete ? (
+      <h3 className="w-full text-center text-xs text-slate-500 border-b py-2 border-slave">confira seus jogos</h3>
+      {showButtonsDelete && !isEmpty ? (
         <div className="flex w-96 h-22 mx-auto mt-2 mb-2 justify-center gap-1">
-          <button
-            className="w-40 p-1 bg-red-100 border border-red-300 text-xs text-slate-800"
-            onClick={openModal}
-          >
-            excluir todos
-          </button>
+          {!hasOnlyOneBet && !isEmpty && (
+            <button
+              className="w-40 p-1 bg-red-100 border border-red-300 text-xs text-slate-800"
+              onClick={() => handleOpenModalDelete("deleteBets")}
+            >
+              excluir todos
+            </button>
+          )}
           <button
             className="w-40 p-1 bg-emerald-50 border grid place-items-center text-green-600 border-green-400"
             onClick={hiddenButtons}
@@ -158,21 +168,15 @@ export function CheckResult() {
         <div className="flex w-96 h-22 mx-auto mt-2 mb-2 items-center justify-between px-3">
           <div>
             {canEdit ? (
-              <ButtonControlBet
-                funcAction={cancelActionEdit}
-                content="cancelar"
-              />
+              <ButtonControlBet funcAction={cancelActionEdit} content="cancelar" />
             ) : (
-              <ButtonControlBet
-                funcAction={handleGetAllBetHistory}
-                content={contentButton}
-              />
+              <ButtonControlBet funcAction={handleGetAllBetHistory} content={contentButton} />
             )}
-            {showButtonEdit && !canEdit && !isNewBet && (
+            {showButtonEdit && !canEdit && !isNewBet && !isEmpty && (
               <ButtonControlBet funcAction={permitEditBet} content="editar" />
             )}
           </div>
-          {!showAllBets && (
+          {!showAllBets ? (
             <div className="flex items-center gap-2">
               <span
                 className="p-1 bg-emerald-50 border border-emerald-300 rounded-lg text-emerald-700 cursor-pointer"
@@ -180,46 +184,52 @@ export function CheckResult() {
               >
                 <BiPlus />
               </span>
-              <IoOptions
-                className="text-2xl text-slate-700 cursor-pointer"
-                onClick={handleShowButtons}
-              />
+              {!isEmpty && <BsFillGearFill className="text-2xl text-emerald-900 cursor-pointer" onClick={handleShowButtons} />}
             </div>
+          ) : !showDeleteGroupBet ? (
+            <ButtonControlBet funcAction={showButtonDeleteGroupBet} content="excluir" />
+          ) : (
+            <ButtonControlBet funcAction={() => setShowDeleteGroupBet(false)} content="cancelar" />
           )}
         </div>
       )}
       <div className="w-full h-full mx-auto overflow-y-auto py-4 overflow-x-hidden">
         <div className="flex w-96 mx-auto flex-col items-center gap-4 px-12">
           {showAllBets ? (
-            allBetsSave?.map((bet) => (
-              <CardBets
-                handleBet={getBetAndShowOnScreen}
-                key={bet.id_bet}
-                quantity={bet.my_bets.length}
-                date={bet.created_at}
-                bets={bet.my_bets}
-                id={bet.id_bet}
-              />
-            ))
+            !!allBetsSave ? (
+              !allBetsEmpy ? (
+                allBetsSave?.map((bet) => (
+                  <CardBets
+                    handleBet={getBetAndShowOnScreen}
+                    key={bet.id_bet}
+                    quantity={bet.my_bets.length}
+                    date={bet.created_at}
+                    bets={bet.my_bets}
+                    id={bet.id_bet}
+                    showButton={showDeleteGroupBet}
+                  />
+                ))
+              ) : (
+                <div className="w-full mt-14 flex flex-col items-center gap-2 h-full">
+                  <ImFilesEmpty className="text-3xl text-slate-700" />
+                  <p className="uppercase text-xs text-slate-700">Sem jogos ainda!</p>
+                </div>
+              )
+            ) : (
+              <CloverEffect animationType="spin" size="medium" />
+            )
           ) : isEmpty ? (
             <div className="w-full mt-14 flex flex-col items-center gap-2 h-full">
               <ImFilesEmpty className="text-3xl text-slate-700" />
-              <p className="uppercase text-xs text-slate-700">
-                Sem jogos ainda!
-              </p>
+              <p className="uppercase text-xs text-slate-700">Sem jogos ainda!</p>
             </div>
           ) : (
             allBets.map((bet, index) => (
               <div key={`${index}-${bet}`} className="flex items-center gap-2">
-                <span className="p-2 bg-slate-50 text-xl font-normal">
-                  {formatViewBet(bet)}
-                </span>
+                <span className="p-2 bg-slate-50 text-xl font-normal">{formatViewBet(bet)}</span>
                 {showSingleButtonDelete && (
                   <span className="p-3 rounded-lg bg-red-50">
-                    <CgTrash
-                      className="text-xl cursor-pointer text-red-500"
-                      onClick={() => removeSomeBet(bet)}
-                    />
+                    <CgTrash className="text-xl cursor-pointer text-red-500" onClick={() => removeSomeBet(bet)} />
                   </span>
                 )}
               </div>
@@ -252,11 +262,7 @@ export function CheckResult() {
                 className="w-80 h-12 grid place-items-center bg-gradient-to-l from-slate-100 to-slate-50 border border-emerald-300 rounded uppercase text-sm font-bold text-slate-600"
                 onClick={handleCompareBets}
               >
-                {loading ? (
-                  <CloverEffect animationType="spin" size="small" />
-                ) : (
-                  "conferir jogos"
-                )}
+                {loading ? <CloverEffect animationType="spin" size="small" /> : "conferir jogos"}
               </button>
             ))
           )}

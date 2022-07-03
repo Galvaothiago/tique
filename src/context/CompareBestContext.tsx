@@ -35,10 +35,7 @@ export function CompareBetsProvider({ children }: ChildrenProp) {
         },
       })
 
-      const infoBetResult = compareBets(
-        allBets,
-        transformStringToArrNumber(result.data[0].result)
-      )
+      const infoBetResult = compareBets(allBets, transformStringToArrNumber(result.data[0].result))
 
       setResultBetDatabase(transformStringToArrNumber(result.data[0].result))
 
@@ -70,9 +67,7 @@ export function CompareBetsProvider({ children }: ChildrenProp) {
       }}
     >
       {children}
-      {showModalResult && (
-        <ModalBetResult data={resultBets} closeModal={closeModal} />
-      )}
+      {showModalResult && <ModalBetResult data={resultBets} closeModal={closeModal} />}
     </CompareBetsContext.Provider>
   )
 }

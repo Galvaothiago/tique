@@ -5,13 +5,12 @@ import { UserContext } from "../../context/UserContext"
 import { FormEvent, useContext, useState } from "react"
 import { CloverEffect } from "../cloverEffect"
 import { ErrorLogin } from "../errorLogin"
-import { ModalContext } from "../../context/ModalContext"
+import { BetsContext } from "../../context/BetsContext"
 
 export function Login() {
-  const { login, loginWithCredentials, error, handleResetPasswordByEmail } =
-    useContext(UserContext)
+  const { login, loginWithCredentials, error, handleResetPasswordByEmail } = useContext(UserContext)
 
-  const { openModalAndCloseAutomatically } = useContext(ModalContext)
+  const { openModalAndCloseAutomatically } = useContext(BetsContext)
 
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
@@ -36,10 +35,7 @@ export function Login() {
     if (hasCredentials) {
       loginWithCredentials(credentials)
     } else {
-      openModalAndCloseAutomatically(
-        "insira seu email e senha para logar!",
-        "fail"
-      )
+      openModalAndCloseAutomatically("insira seu email e senha para logar!", "fail")
     }
   }
 
@@ -48,9 +44,7 @@ export function Login() {
       <div className="flex flex-col w-full max-w-md px-6 py-8 bg-white rounded-lg drop-shadow-2xl md:px-8 lg:px-10">
         <div className="flex flex-col items-center justify-center gap-4 text-center text-xl font-light text-slate-700 sm:text-2xl">
           <p>
-            Crie seus jogos da{" "}
-            <span className="font-bold text-green-800">MEGA-SENA</span> e
-            confira de forma rápida!
+            Crie seus jogos da <span className="font-bold text-green-800">MEGA-SENA</span> e confira de forma rápida!
           </p>
           <CloverEffect size="medium" />
         </div>
@@ -86,9 +80,7 @@ export function Login() {
                 />
               </div>
             </div>
-            {error && (
-              <ErrorLogin content="Email e/ou senha estão incorretos!" />
-            )}
+            {error && <ErrorLogin content="Email e/ou senha estão incorretos!" />}
             <div className="flex items-center mb-6 mt-4">
               <div className="flex ml-auto">
                 <button

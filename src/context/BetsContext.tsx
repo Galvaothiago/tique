@@ -1,7 +1,7 @@
-import { createContext, ReactNode, useContext, useState } from "react"
+import { createContext, ReactNode, useState } from "react"
 import { ModalAction } from "../components/modalAction"
+import { ModalDelete } from "../components/modalDelete"
 import { api } from "../service/api"
-import { ModalContext } from "./ModalContext"
 
 interface SaveBetsProps {
   created_at: string
@@ -20,9 +20,9 @@ interface BetsResultsProps {
   my_bets: string[]
 }
 
-interface ResponseBetsProp {
-  status: number
+interface InfoToDelete {
   id: string
+  userId: string
 }
 
 interface BetsProps {
@@ -39,6 +39,12 @@ interface BetsProps {
   updateBets: (bets: number[][], betRef: string) => void
   permitInsertBets: () => void
   blockInsertBets: () => void
+  handleDeleteBet: (id: string, userId: string) => Promise<void>
+  getInfoToDelete: (id: string, userId: string) => void
+  handleOpenModalDelete: (typeModal: string) => void
+  handleCloseModalDelete: () => void
+  openModalAndCloseAutomatically: (message: string, type: string) => void
+  updateListAllBetsHistory: (refId: string) => void
 }
 
 interface ChildrenProps {
@@ -51,13 +57,27 @@ export function BetsProvider({ children }: ChildrenProps) {
   const [allBets, setAllBets] = useState<number[][]>([])
   const [allBetsSave, setAllBetsSave] = useState<SaveBetsProps[]>()
   const [showBetsHistory, setShowBetsHistory] = useState<boolean>(false)
-  const [messageModalAction, setMessageModalAction] = useState<string>("")
-  const [showModalAction, setShowModalAction] = useState<boolean>(false)
   const [canInsertBets, setCanInsertBets] = useState<boolean>(true)
 
-  const { openModalAndCloseAutomatically } = useContext(ModalContext)
+  const [infoToDelete, setInfoToDelete] = useState<InfoToDelete>()
+  const [openModalDelete, setOpenModalDelete] = useState<boolean>(false)
+  const [typeModalAction, setTypeModalAction] = useState<string>("")
+  const [typeModalDelete, setTypeModalDelete] = useState<string>("")
+  const [messageModal, setMessageModal] = useState<string>("")
+  const [openModalAction, setOpenModalAction] = useState<boolean>(false)
 
   let bets = []
+  const TIME_TO_CLOSE = 2000 // 2 seconds
+  const DELAY_TO_OPEN = 500 // 1/2 second
+
+  const handleOpenModalDelete = (typeModal: string) => {
+    setOpenModalDelete(true)
+    setTypeModalDelete(typeModal)
+  }
+
+  const handleCloseModalDelete = () => {
+    setOpenModalDelete(false)
+  }
 
   const insertBet = (arrayBet: number[]) => {
     if (!canInsertBets) return
@@ -111,8 +131,18 @@ export function BetsProvider({ children }: ChildrenProps) {
 
       setAllBetsSave(dataResults)
     } catch (err) {
-      console.log(err.message)
+      if (err.response.status === 404) {
+        setAllBetsSave([])
+      }
     }
+  }
+
+  const updateListAllBetsHistory = (refId: string) => {
+    const betsAfterDeleting = allBetsSave.filter((bet) => {
+      return bet.id_bet !== refId
+    })
+
+    setAllBetsSave(betsAfterDeleting)
   }
 
   const transformArrStringToNumber = (bets: string[]) => {
@@ -128,10 +158,7 @@ export function BetsProvider({ children }: ChildrenProps) {
   const transformArrNumberToString = (arrNumbers: number[][]) => {
     const arrString = arrNumbers
       .map((arrNumber) => {
-        return arrNumber.reduce(
-          (acc, number) => acc + String(number) + " - ",
-          ""
-        )
+        return arrNumber.reduce((acc, number) => acc + String(number) + " - ", "")
       })
       .map((bet) => bet.substring(0, [...bet].length - 3))
 
@@ -148,7 +175,7 @@ export function BetsProvider({ children }: ChildrenProps) {
       })
 
       if (status === 204) {
-        openModalAndCloseAutomatically("Aposta atualizada com sucesso!", "fail")
+        openModalAndCloseAutomatically("Aposta atualizada com sucesso!", "success")
       }
     } catch (err) {
       console.log(err)
@@ -170,13 +197,43 @@ export function BetsProvider({ children }: ChildrenProps) {
         data: { id },
       } = await api.post("bets", data)
 
-      if (status === 200) {
-        openModalAndCloseAutomatically("Aposta salva com sucesso!", "fail")
+      if (status === 201) {
+        openModalAndCloseAutomatically("Aposta salva com sucesso!", "success")
       }
     } catch (err) {
-      console.log(err)
-      alert(err)
+      openModalAndCloseAutomatically(err.message, "fail")
     }
+  }
+
+  const handleDeleteBet = async (id: string, userId: string) => {
+    try {
+      await api.delete("/bets", {
+        params: {
+          betRef: id,
+          userId: userId,
+        },
+      })
+    } catch (err) {
+      openModalAndCloseAutomatically(err.message, "fail")
+    }
+  }
+
+  const getInfoToDelete = (id: string, userId: string) => {
+    setInfoToDelete({ id, userId })
+  }
+
+  const openModalAndCloseAutomatically = (message: string, type: string) => {
+    setMessageModal(message)
+    setTypeModalAction(type)
+
+    setTimeout(() => {
+      setOpenModalAction(true)
+    }, DELAY_TO_OPEN)
+
+    setTimeout(() => {
+      setOpenModalAction(false)
+      setMessageModal("")
+    }, TIME_TO_CLOSE)
   }
 
   return (
@@ -195,9 +252,17 @@ export function BetsProvider({ children }: ChildrenProps) {
         updateBets,
         blockInsertBets,
         permitInsertBets,
+        handleDeleteBet,
+        getInfoToDelete,
+        handleOpenModalDelete,
+        handleCloseModalDelete,
+        openModalAndCloseAutomatically,
+        updateListAllBetsHistory,
       }}
     >
       {children}
+      {openModalDelete && <ModalDelete info={infoToDelete} type={typeModalDelete} />}
+      {openModalAction && <ModalAction message={messageModal} type={typeModalAction} />}
     </BetsContext.Provider>
   )
 }

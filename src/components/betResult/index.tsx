@@ -1,21 +1,19 @@
 import { useContext, useEffect, useState } from "react"
 import { AiOutlineEdit } from "react-icons/ai"
-import { ModalContext } from "../../context/ModalContext"
+import { BetsContext } from "../../context/BetsContext"
 import { UserContext } from "../../context/UserContext"
 import { api } from "../../service/api"
 import { getFormatDateResult } from "../../utils/formatDate"
 import { validateNumbers } from "../../utils/validateNumbers"
 
 export function BetResult() {
-  const [resultToVerify, setResultToVerify] = useState<number[]>([
-    2, 11, 20, 33, 42, 53,
-  ])
+  const [resultToVerify, setResultToVerify] = useState<number[]>([2, 11, 20, 33, 42, 53])
   const [newDate, setNewDate] = useState<string>("14/05/2022")
 
   const quantityNumbersAllowed = 6
 
   const { user } = useContext(UserContext)
-  const { openModalAndCloseAutomatically } = useContext(ModalContext)
+  const { openModalAndCloseAutomatically } = useContext(BetsContext)
 
   const transformArray = (arr: string) => {
     const newArr = arr.split("-")
@@ -25,17 +23,13 @@ export function BetResult() {
   }
 
   const createNewResult = async () => {
-    const newResult = prompt(
-      "insira os números separados por vírgula. Ex: 3,23,44,54,58,60"
-    )
+    const newResult = prompt("insira os números separados por vírgula. Ex: 3,23,44,54,58,60")
 
     if (!!newResult) {
       const arrayResult = newResult?.split(",")
       const finalResult = arrayResult?.map((number) => Number(number))
 
-      const resultToSave = finalResult
-        .map((number) => String(number))
-        .join(" - ")
+      const resultToSave = finalResult.map((number) => String(number)).join(" - ")
       const isValidBet = validateNumbers(finalResult, quantityNumbersAllowed)
 
       if (isValidBet) {
@@ -52,10 +46,7 @@ export function BetResult() {
           })
 
           if (status === 204) {
-            openModalAndCloseAutomatically(
-              "Aposta criada com sucesso!",
-              "success"
-            )
+            openModalAndCloseAutomatically("Aposta criada com sucesso!", "success")
           }
         } catch (err) {
           console.log(err)
@@ -88,9 +79,7 @@ export function BetResult() {
 
   return (
     <section className="w-full h-52 bg-slate-100">
-      <h3 className="w-full text-center text-xs text-slate-500 border-b py-2 border-slave">
-        resultado
-      </h3>
+      <h3 className="w-full text-center text-xs text-slate-500 border-b py-2 border-slave">resultado</h3>
       <div className="flex justify-center items-center gap-1 pt-6">
         {resultToVerify.map((number, index) => (
           <span

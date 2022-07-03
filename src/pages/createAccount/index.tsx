@@ -4,7 +4,7 @@ import { GiClover } from "react-icons/gi"
 import { createAccountCredentials } from "../../authFirebase"
 import { validateEmail, validatePassword } from "../../utils/regexValidation"
 import { checkEmailExist } from "../../utils/checkEmailExist"
-import { ModalContext } from "../../context/ModalContext"
+import { BetsContext } from "../../context/BetsContext"
 
 export default function CreateAccount() {
   const [email, setEmail] = useState<string>("")
@@ -13,11 +13,10 @@ export default function CreateAccount() {
   const [password, setPassword] = useState<string>("")
   const [confirmPassword, setConfirmPassword] = useState<string>("")
   const [feedbackPassword, setFeedbackPassword] = useState<string>("")
-  const [feedbackConfirmPassword, setFeedbackConfirmPassword] =
-    useState<boolean>(true)
+  const [feedbackConfirmPassword, setFeedbackConfirmPassword] = useState<boolean>(true)
   const [feedbackEmail, setFeedbackEmail] = useState<string>("")
 
-  const { openModalAndCloseAutomatically } = useContext(ModalContext)
+  const { openModalAndCloseAutomatically } = useContext(BetsContext)
   const router = useRouter()
 
   const handleCreateAccount = async (event: FormEvent) => {
@@ -38,10 +37,7 @@ export default function CreateAccount() {
       return
     }
 
-    openModalAndCloseAutomatically(
-      "Não foi possivel realizar o cadastro, tente novamente",
-      "success"
-    )
+    openModalAndCloseAutomatically("Não foi possivel realizar o cadastro, tente novamente", "success")
   }
 
   const handleInstantPasswordValidation = (content: string) => {
@@ -59,9 +55,7 @@ export default function CreateAccount() {
       if (isValidPassword) {
         setFeedbackPassword("")
       } else {
-        setFeedbackPassword(
-          "senha precisa conter letras e numeros e pelo menos um caracter especial"
-        )
+        setFeedbackPassword("senha precisa conter letras e numeros e pelo menos um caracter especial")
       }
 
       return
@@ -144,11 +138,7 @@ export default function CreateAccount() {
         </div>
         <span className="justify-center text-sm text-center text-gray-500 flex-items-center">
           Já possui uma conta?
-          <a
-            href="/"
-            target="_blank"
-            className="text-sm ml-1 text-green-500 underline hover:text-blue-700"
-          >
+          <a href="/" target="_blank" className="text-sm ml-1 text-green-500 underline hover:text-blue-700">
             Entrar
           </a>
         </span>
@@ -163,18 +153,12 @@ export default function CreateAccount() {
                   autoComplete="false"
                   id="create-account-email"
                   className={`rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 ${
-                    feedbackEmail
-                      ? "focus:ring-red-800"
-                      : "focus:ring-green-500"
+                    feedbackEmail ? "focus:ring-red-800" : "focus:ring-green-500"
                   } focus:border-transparent`}
                   name="email"
                   placeholder="Email"
                 />
-                {feedbackEmail && (
-                  <span className="text-xs ml-2 text-justify text-red-800">
-                    {feedbackEmail}
-                  </span>
-                )}
+                {feedbackEmail && <span className="text-xs ml-2 text-justify text-red-800">{feedbackEmail}</span>}
               </div>
             </div>
             <div className="flex gap-4 mb-2">
@@ -204,24 +188,16 @@ export default function CreateAccount() {
             <div className="flex flex-col mb-2 mt-4">
               <div className="relative mb-2">
                 <input
-                  onChange={(e) =>
-                    handleInstantPasswordValidation(e.target.value)
-                  }
+                  onChange={(e) => handleInstantPasswordValidation(e.target.value)}
                   type="password"
                   required
                   id="create-account-password"
                   className={` rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 ${
-                    feedbackPassword
-                      ? "focus:ring-red-800"
-                      : "focus:ring-green-500"
+                    feedbackPassword ? "focus:ring-red-800" : "focus:ring-green-500"
                   } focus:border-transparent`}
                   placeholder="Senha"
                 />
-                {feedbackPassword && (
-                  <span className="text-xs ml-2 text-justify text-red-800">
-                    {feedbackPassword}
-                  </span>
-                )}
+                {feedbackPassword && <span className="text-xs ml-2 text-justify text-red-800">{feedbackPassword}</span>}
               </div>
               <div className="relative">
                 <input
@@ -230,9 +206,7 @@ export default function CreateAccount() {
                   required
                   id="create-account-password-confirm"
                   className={`rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 ${
-                    !feedbackConfirmPassword
-                      ? "focus:ring-red-800"
-                      : "focus:ring-green-500"
+                    !feedbackConfirmPassword ? "focus:ring-red-800" : "focus:ring-green-500"
                   } focus:border-transparent`}
                   placeholder="Repita a senha"
                 />

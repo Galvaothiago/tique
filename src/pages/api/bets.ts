@@ -1,16 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-import {
-  collection,
-  getDocs,
-  where,
-  query,
-  addDoc,
-  updateDoc,
-  doc,
-  getDoc,
-  deleteDoc,
-} from "firebase/firestore"
+import { collection, getDocs, where, query, addDoc, updateDoc, doc, getDoc, deleteDoc } from "firebase/firestore"
 import { NextApiRequest, NextApiResponse } from "next"
 import db from "../../../firebase"
 
@@ -62,7 +52,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(STATUS_CREATED).json({ id: betRef.id })
     } catch (err) {
       res.status(STATUS_BAD_REQUEST)
-      console.log(err.message)
     }
   }
 
@@ -70,10 +59,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const data = req.body
 
     try {
-      const q = query(
-        collection(db, "bets"),
-        where("id_user", "==", data.params.userId)
-      )
+      const q = query(collection(db, "bets"), where("id_user", "==", data.params.userId))
       const docs = await getDocs(q)
       const dataRef = docs.docs[0].ref
 
@@ -102,22 +88,21 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
       return res.status(STATUS_NO_CONTENT).json({})
     } catch (err) {
-      console.log(err)
       return res.status(STATUS_BAD_REQUEST).json({})
     }
   }
 
   if (req.method === "DELETE") {
-    const betRef = req.body.betRef
-    const userId = req.body.userId
+    const betRef = req.query.betRef
+    const userId = req.query.userId
 
     try {
       if (!userId) return res.status(STATUS_UNAUTHORIZED).json({})
 
-      const docRef = doc(db, "bets", betRef)
+      const docRef = doc(db, "bets", String(betRef))
       const docSnap = await getDoc(docRef)
 
-      if (docSnap.data().id_user !== userId) {
+      if (docSnap.data()?.id_user !== userId) {
         return res.status(STATUS_UNAUTHORIZED).json({})
       }
 

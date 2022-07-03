@@ -1,20 +1,10 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react"
-import {
-  signInWithGoogle,
-  signInWithCredentials,
-  resetPasswordByEmail,
-} from "../authFirebase"
+import { createContext, ReactNode, useContext, useEffect, useState } from "react"
+import { signInWithGoogle, signInWithCredentials, resetPasswordByEmail } from "../authFirebase"
 import { signOut } from "firebase/auth"
 import { setCookie, parseCookies, destroyCookie } from "nookies"
 import { auth } from "../../firebase"
-import { ModalAction } from "../components/modalAction"
-import { ModalContext } from "./ModalContext"
+
+import { BetsContext } from "./BetsContext"
 
 interface ChildrenProp {
   children: ReactNode
@@ -48,7 +38,7 @@ export function UserProvider({ children }: ChildrenProp) {
   const [user, setUser] = useState<User | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const { openModalAndCloseAutomatically } = useContext(ModalContext)
+  const { openModalAndCloseAutomatically } = useContext(BetsContext)
 
   const setCookieUserInfo = (user: User) => {
     setCookie(null, "userTique", JSON.stringify(user), {
@@ -70,8 +60,7 @@ export function UserProvider({ children }: ChildrenProp) {
       setUser(data)
       setCookieUserInfo(data)
     } catch (err) {
-      console.log(err)
-      alert(err)
+      openModalAndCloseAutomatically(err.message, "fail")
     }
   }
 
@@ -79,17 +68,14 @@ export function UserProvider({ children }: ChildrenProp) {
     const { email, password } = credentials
 
     try {
-      const { user, errorMessage, errorCode } = await signInWithCredentials(
-        email,
-        password
-      )
+      const { user, errorMessage, errorCode } = await signInWithCredentials(email, password)
 
       if (errorMessage) setError(errorMessage)
 
       setUser(user)
       setCookieUserInfo(user)
     } catch (err) {
-      console.log(err)
+      openModalAndCloseAutomatically(err.message, "fail")
     }
   }
 
@@ -107,22 +93,13 @@ export function UserProvider({ children }: ChildrenProp) {
   const handleResetPasswordByEmail = (email?: string) => {
     try {
       if (!email) {
-        openModalAndCloseAutomatically(
-          "Insira seu email e solicite o reset da senha!",
-          "fail"
-        )
+        openModalAndCloseAutomatically("Insira seu email e solicite o reset da senha!", "fail")
         return
       }
       resetPasswordByEmail(email)
-      openModalAndCloseAutomatically(
-        "Enviado instruções para reset de sua senha!",
-        "success"
-      )
+      openModalAndCloseAutomatically("Enviado instruções para reset de sua senha!", "success")
     } catch (err) {
-      openModalAndCloseAutomatically(
-        "Não foi possivel enviar o email, tente novamente mais tarde!",
-        "fail"
-      )
+      openModalAndCloseAutomatically("Não foi possivel enviar o email, tente novamente mais tarde!", "fail")
     }
   }
   useEffect(() => {

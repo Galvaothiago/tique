@@ -178,7 +178,7 @@ export function BetsProvider({ children }: ChildrenProps) {
         openModalAndCloseAutomatically("Aposta atualizada com sucesso!", "success")
       }
     } catch (err) {
-      console.log(err)
+      openModalAndCloseAutomatically(err.message, "fail")
     }
   }
 
@@ -214,7 +214,9 @@ export function BetsProvider({ children }: ChildrenProps) {
         },
       })
     } catch (err) {
-      openModalAndCloseAutomatically(err.message, "fail")
+      if (err.response.status !== 504) {
+        openModalAndCloseAutomatically(err.message, "fail")
+      }
     }
   }
 

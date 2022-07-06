@@ -26,6 +26,7 @@ Algumas das funcionalidades até o presente momento:
 - [TypeScript](https://www.typescriptlang.org/docs/)
 - [Firebase](https://firebase.google.com/docs)
 - [Axios](https://axios-http.com/docs/intro)
+- [Tailwind CSS](https://tailwindcss.com/)
 
 ## Installation
 
@@ -63,4 +64,6 @@ $ yarn dev
 ## Home 
 
 <img src="https://user-images.githubusercontent.com/72774408/174660506-dd1a9874-c0ce-4c20-8f53-dd622fd3932f.png" alt="Tela home" />
+
+<img src="https://user-images.githubusercontent.com/72774408/177648202-94297b52-1557-45e7-bf7d-343ad360ca5d.png" alt="Resultado da aposta" />
 

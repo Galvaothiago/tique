@@ -2,17 +2,14 @@ import { useContext, useEffect, useState } from "react"
 import { ImFilesEmpty } from "react-icons//im"
 import { AiOutlineCheck } from "react-icons/ai"
 import { BiPlus } from "react-icons/bi"
-import { CgTrash } from "react-icons/cg"
-import { IoOptions } from "react-icons/io5"
 import { BsFillGearFill } from "react-icons/bs"
+import { CgTrash } from "react-icons/cg"
 import { BetsContext } from "../../context/BetsContext"
 import { CompareBetsContext } from "../../context/CompareBestContext"
-
 import { UserContext } from "../../context/UserContext"
 import { ButtonControlBet } from "../buttonControlBet"
 import { CardBets } from "../cardBets"
 import { CloverEffect } from "../cloverEffect"
-import { ButtonDeleteBet } from "../buttonDeleteBet"
 
 export function CheckResult() {
   const {

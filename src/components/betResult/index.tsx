@@ -64,7 +64,6 @@ export function BetResult() {
       })
 
       const hasBetResult = !!result.data[0].result
-      console.log(result.data)
 
       if (hasBetResult) {
         const dataResult = transformArray(result?.data[0].result)
